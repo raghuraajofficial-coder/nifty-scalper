@@ -93,7 +93,7 @@ def simulate(close, open_, nifty, c: Cfg, start: int):
     last = close.ffill()
     cash, pos, pending, stops = c.capital, {}, None, set()
     fy_gain, carry, tax_paid, charges, n_trades, wins = 0.0, 0.0, 0.0, 0.0, 0, 0
-    curve = []
+    curve, closed = [], []
     for i in range(start, len(dates)):
         d = dates[i]
         if pending is not None or stops:
@@ -108,6 +108,7 @@ def simulate(close, open_, nifty, c: Cfg, start: int):
                 charges += fee
                 n_trades += 1
                 wins += gain > 0
+                closed.append((gain / pos[s]["cost"] * 100, i - pos[s]["day"]))
                 del pos[s]
             buys = [s for s in target if s not in pos and s not in stops and np.isfinite(open_.at[d, s])]
             equity = cash + sum(p["qty"] * last.at[d, s] for s, p in pos.items())
@@ -119,7 +120,7 @@ def simulate(close, open_, nifty, c: Cfg, start: int):
                 fee = delivery_cost(qty * px, "B")
                 cash -= qty * px + fee
                 charges += fee
-                pos[s] = dict(qty=qty, cost=qty * px + fee, entry=px)
+                pos[s] = dict(qty=qty, cost=qty * px + fee, entry=px, day=i)
             pending, stops = None, set()
         if c.stop_pct:
             stops = {s for s, p in pos.items() if last.at[d, s] < p["entry"] * (1 - c.stop_pct)}
@@ -140,8 +141,14 @@ def simulate(close, open_, nifty, c: Cfg, start: int):
         curve.append((cash + sum(p["qty"] * last.at[d, s] for s, p in pos.items()), tax_paid))
     eq = pd.Series([x[0] for x in curve], index=dates[start:])
     pre = eq + pd.Series([x[1] for x in curve], index=dates[start:])
+    g, held = np.array([x[0] for x in closed] or [0.0]), np.array([x[1] for x in closed] or [0])
     return eq, pre, dict(trades=n_trades, win_pct=round(wins / n_trades * 100, 1) if n_trades else 0,
-                         charges=round(charges), tax=round(tax_paid))
+                         charges=round(charges), tax=round(tax_paid),
+                         trade_avg_pct=round(float(g.mean()), 1), trade_median_pct=round(float(np.median(g)), 1),
+                         avg_win_pct=round(float(g[g > 0].mean()), 1) if (g > 0).any() else 0.0,
+                         avg_loss_pct=round(float(g[g <= 0].mean()), 1) if (g <= 0).any() else 0.0,
+                         best_trade_pct=round(float(g.max()), 1), worst_trade_pct=round(float(g.min()), 1),
+                         avg_hold_weeks=round(float(held.mean()) / 5, 1), median_hold_weeks=round(float(np.median(held)) / 5, 1))
 
 
 def perf(eq: pd.Series) -> dict:
@@ -149,10 +156,16 @@ def perf(eq: pd.Series) -> dict:
     yr = eq.groupby(eq.index.year).last().pct_change()
     yr.iloc[0] = eq.groupby(eq.index.year).last().iloc[0] / eq.iloc[0] - 1
     daily = eq.pct_change().dropna()
+    mo = eq.groupby([eq.index.year, eq.index.month]).last().pct_change().dropna()
+    monthly = dict(avg=round(float(mo.mean() * 100), 2), median=round(float(mo.median() * 100), 2),
+                   up_pct=round(float((mo > 0).mean() * 100), 1), best=round(float(mo.max() * 100), 1), worst=round(float(mo.min() * 100), 1),
+                   months=len(mo), above_5=int((mo > 0.05).sum()), below_minus_5=int((mo < -0.05).sum()),
+                   worst_run=int(max((len(list(g)) for k, g in __import__("itertools").groupby(mo < 0) if k), default=0)),
+                   last_24={f"{y}-{m:02d}": round(float(v) * 100, 1) for (y, m), v in mo.iloc[-24:].items()})
     return dict(cagr=round(((eq.iloc[-1] / eq.iloc[0]) ** (1 / years) - 1) * 100, 1), final=round(float(eq.iloc[-1])),
                 maxdd=round(float((1 - eq / eq.cummax()).max() * 100), 1), vol=round(float(daily.std() * np.sqrt(252) * 100), 1),
                 worst_year=round(float(yr.min() * 100), 1), best_year=round(float(yr.max() * 100), 1),
-                down_years=int((yr < 0).sum()), years={int(k): round(float(v) * 100, 1) for k, v in yr.items()})
+                down_years=int((yr < 0).sum()), monthly=monthly, years={int(k): round(float(v) * 100, 1) for k, v in yr.items()})
 
 
 VARIANTS = [
