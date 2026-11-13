@@ -69,6 +69,9 @@ class OrbConfig:
     slippage_bps: float = 3.0      # per market order; breakouts fill worse than calm markets
     fill: str = "conservative"     # how to read a candle that both triggers the entry and touches the stop
     fixed_notional: float = 0.0    # research only: trade this rupee amount per signal, ignore account limits
+    target_r: float = 0.0          # exit rules under test (0 = off): fixed target, in multiples of the stop distance
+    partial_r: float = 0.0         # book half at this multiple and move the stop on the rest to entry
+    trail_mult: float = 0.0        # trail the stop behind the best price by this multiple of the stop distance
 
 
 COST = ns.Config()
@@ -136,7 +139,7 @@ def simulate(p: dict, bars: pd.DataFrame, oc: OrbConfig) -> dict | None:
     side, level, sd = p["side"], p["level"], oc.stop_atr * p["atr"]
     slip, t_in, t_out = oc.slippage_bps / 1e4, _mins(oc.entry_until), _mins(oc.exit_at)
     step = pd.Timedelta(minutes=5)
-    t = None
+    t, stop, best, legs, rem, reason = None, 0.0, 0.0, [], 1.0, ""
     for ts, o, h, l, c in zip(bars.index, bars["open"].to_numpy(), bars["high"].to_numpy(),
                               bars["low"].to_numpy(), bars["close"].to_numpy()):
         m = ts.hour * 60 + ts.minute
@@ -147,21 +150,36 @@ def simulate(p: dict, bars: pd.DataFrame, oc: OrbConfig) -> dict | None:
                 continue
             base = max(o, level) if side == 1 else min(o, level)          # gap through the level fills at the open
             entry = base * (1 + side * slip)
-            stop = entry - side * sd
+            stop, best = entry - side * sd, entry
             t = dict(sym=p["sym"], side=side, sig_time=ts, entry_time=ts, entry=entry, stop=stop, target=None,
                      sd=sd, relvol=p["relvol"], exit=None, exit_time=None, reason="open")
             touched = l <= stop if side == 1 else h >= stop
             beyond = c < stop if side == 1 else c > stop
             if touched and (oc.fill == "conservative" or beyond):         # 5-min data cannot show which came first
-                t.update(exit=stop * (1 - side * slip), exit_time=ts + step, reason="stop")
-                return t
-        else:
-            if l <= t["stop"] if side == 1 else h >= t["stop"]:
-                px = min(o, t["stop"]) if side == 1 else max(o, t["stop"])
-                t.update(exit=px * (1 - side * slip), exit_time=ts + step, reason="stop")
-                return t
-        if m + 5 >= t_out:
-            t.update(exit=c * (1 - side * slip), exit_time=ts + step, reason="time")
+                legs, reason = [(1.0, stop * (1 - side * slip))], "stop"
+        elif l <= stop if side == 1 else h >= stop:                       # stop is checked before any profit rule
+            px = min(o, stop) if side == 1 else max(o, stop)
+            legs.append((rem, px * (1 - side * slip)))
+            reason = "stop"
+        if not reason:
+            fav = h if side == 1 else l
+            entry = t["entry"]
+            if oc.target_r and (fav - entry) * side >= oc.target_r * sd:
+                legs.append((rem, entry + side * oc.target_r * sd))
+                reason = "target"
+            else:
+                if oc.partial_r and rem == 1.0 and (fav - entry) * side >= oc.partial_r * sd:
+                    legs.append((0.5, entry + side * oc.partial_r * sd))  # book half, protect the rest at entry
+                    rem, stop = 0.5, entry
+                if oc.trail_mult:                                         # trail from the best price; never loosens
+                    best = max(best, fav) if side == 1 else min(best, fav)
+                    new = best - side * oc.trail_mult * sd
+                    stop = max(stop, new) if side == 1 else min(stop, new)
+                if m + 5 >= t_out:
+                    legs.append((rem, c * (1 - side * slip)))
+                    reason = "time"
+        if reason:
+            t.update(exit=sum(f * x for f, x in legs), exit_time=ts + step, reason=reason, legs=legs)
             return t
     return t
 
@@ -173,11 +191,13 @@ def size_and_settle(t: dict, equity: float, oc: OrbConfig) -> dict | None:
         qty = int(min(equity * oc.risk_pct / 100 // t["sd"], equity * oc.leverage / oc.top_n // t["entry"]))
     if qty < 1:
         return None
+    legs = t.pop("legs", None) if "legs" in t else None
     t = dict(t, qty=qty, gross=None, cost=None, net=None)
     if t["exit"] is not None:
-        buy, sell = (t["entry"], t["exit"]) if t["side"] == 1 else (t["exit"], t["entry"])
-        t["gross"] = qty * (sell - buy)
-        t["cost"] = ns.order_cost(qty * buy, "B", COST) + ns.order_cost(qty * sell, "S", COST)
+        side, out = t["side"], "S" if t["side"] == 1 else "B"
+        t["gross"] = side * qty * (t["exit"] - t["entry"])
+        t["cost"] = ns.order_cost(qty * t["entry"], "B" if side == 1 else "S", COST) + \
+            sum(ns.order_cost(qty * f * x, out, COST) for f, x in (legs or [(1.0, t["exit"])]))
         t["net"] = t["gross"] - t["cost"]
     return t
 
@@ -236,11 +256,15 @@ VARIANTS = [
     ("D. Tight stop as in the US study (10% of daily range)", dict(stop_atr=0.10), "n200"),
     ("E. Nifty 50 stocks only", {}, "n50"),
     ("F. Control: every breakout, no in-play filter", dict(top_n=999, min_relvol=0.0, fixed_notional=100_000.0), "n200"),
+    ("G. Base + trailing stop (2x stop distance behind best price)", dict(trail_mult=2.0), "n200"),
+    ("H. Base + book half at +2R, rest protected at entry", dict(partial_r=2.0), "n200"),
+    ("I. Base + fixed profit target at +3R", dict(target_r=3.0), "n200"),
 ]
 
 
 def cmd_backtest(source: str, days: int):
-    data = load_many(NIFTY200, days, source)
+    data = load_many(NIFTY200 + ["NIFTYBEES"], days, source)
+    bees = data.pop("NIFTYBEES", None)
     if not data:
         sys.exit("No data loaded.")
     base = OrbConfig()
@@ -255,6 +279,8 @@ def cmd_backtest(source: str, days: int):
     out = dict(generated=datetime.now(ns.IST).strftime("%Y-%m-%d %H:%M"), source=source, stocks=len(data),
                days_tested=len(tested), first_day=str(tested[0])[:10] if tested else None,
                last_day=str(tested[-1])[:10] if tested else None, capital=base.capital, risk_pct=base.risk_pct, rows=rows)
+    import research
+    out["research"] = research.run(data, bees)
     DOCS.mkdir(exist_ok=True)
     (DOCS / "orb_backtest.json").write_text(json.dumps(out, indent=1))
     f = DOCS / "data.json"                                              # show the base case in the dashboard's Backtest tab
@@ -264,14 +290,18 @@ def cmd_backtest(source: str, days: int):
     state["status"].setdefault("now", out["generated"])
     f.write_text(json.dumps(state, indent=1))
     print(f"\nORB BACKTEST  source={source}  stocks={len(data)}  sessions tested={len(tested)}  ({out['first_day']} to {out['last_day']})")
-    print(f"{'Variant':<52}{'Fills':<14}{'Trades':>7}{'Win%':>7}{'Move%':>8}{'Avg R':>8}{'PF':>6}{'Gross':>9}{'Costs':>8}{'Net':>9}{'Net%':>8}{'MaxDD%':>8}")
+    print(f"{'Variant':<62}{'Fills':<14}{'Trades':>7}{'Win%':>7}{'Move%':>8}{'Avg R':>8}{'PF':>6}{'Gross':>9}{'Costs':>8}{'Net':>9}{'Net%':>8}{'MaxDD%':>8}")
     for r in rows:
         if not r["n"]:
-            print(f"{r['name']:<52}{r['fill']:<14}{0:>7}")
+            print(f"{r['name']:<62}{r['fill']:<14}{0:>7}")
             continue
-        print(f"{r['name']:<52}{r['fill']:<14}{r['n']:>7}{r['win_pct']:>7}{r['avg_move_pct']:>8}{r['avg_r']:>8}{str(r['pf']):>6}"
+        print(f"{r['name']:<62}{r['fill']:<14}{r['n']:>7}{r['win_pct']:>7}{r['avg_move_pct']:>8}{r['avg_r']:>8}{str(r['pf']):>6}"
               f"{r['gross']:>9,}{r['cost']:>8,}{r['net']:>9,}{r['net_pct']:>8}{r['dd_pct']:>8}")
     print("\nMove% = average price move per trade in the trade's direction, before charges. Avg R = average net result in units of risk.")
+    print(f"\n{'Published ideas, Rs 1 lakh per trade':<66}{'Trades':>8}{'Win%':>7}{'Gross%':>8}{'Cost%':>7}{'Net%':>8}{'PF':>6}{'t':>7}")
+    for r in out["research"]:
+        if r["n"]:
+            print(f"{r['name']:<66}{r['n']:>8}{r['win_pct']:>7}{r['gross_pct']:>8}{r['cost_pct']:>7}{r['net_pct']:>8}{str(r['pf']):>6}{r['t_daily']:>7}")
 
 
 def live_scan(state: dict, now: datetime, source: str, capital: float) -> str:
