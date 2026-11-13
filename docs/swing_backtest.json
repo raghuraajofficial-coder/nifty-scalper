@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-13 18:26",
+ "generated": "2026-11-13 18:45",
  "source": "yfinance",
  "stocks": 192,
  "first_day": "2015-11-27",
@@ -303,8 +303,8 @@
    "tax": 163828,
    "trade_avg_pct": 21.5,
    "trade_median_pct": 2.7,
-   "avg_win_pct": 49.9,
-   "avg_loss_pct": -14.8,
+   "avg_win_pct": 50.7,
+   "avg_loss_pct": -14.5,
    "best_trade_pct": 747.1,
    "worst_trade_pct": -74.1,
    "avg_hold_weeks": 18.4,
@@ -618,7 +618,7 @@
    "name": "I. Base with a 20% trailing stop per stock",
    "after_tax": {
     "cagr": 16.6,
-    "final": 536848,
+    "final": 536847,
     "maxdd": 44.4,
     "vol": 21.8,
     "worst_year": -15.7,
@@ -1376,7 +1376,7 @@
    ],
    [
     "2022-07",
-    488653,
+    488654,
     216025,
     356168
    ],
@@ -1400,7 +1400,7 @@
    ],
    [
     "2022-11",
-    564617,
+    564616,
     236171,
     408145
    ],
@@ -1484,7 +1484,7 @@
    ],
    [
     "2024-01",
-    1571948,
+    1571947,
     273530,
     653712
    ],
@@ -1562,7 +1562,7 @@
    ],
    [
     "2025-02",
-    1230275,
+    1230274,
     278554,
     716747
    ],
@@ -1652,7 +1652,7 @@
    ],
    [
     "2026-05",
-    1563197,
+    1563196,
     296470,
     947683
    ],
@@ -1676,7 +1676,7 @@
    ],
    [
     "2026-09",
-    1403378,
+    1403377,
     284795,
     919094
    ],
@@ -1826,6 +1826,2023 @@
    "2026-09": -5.7,
    "2026-10": -0.4,
    "2026-11": 5.5
-  }
+  },
+  "rupees": {
+   "2015-12": 6877,
+   "2016-01": -8447,
+   "2016-02": -6386,
+   "2016-03": 9431,
+   "2016-04": 926,
+   "2016-05": 5292,
+   "2016-06": 1991,
+   "2016-07": 14275,
+   "2016-08": 6376,
+   "2016-09": -5526,
+   "2016-10": -2173,
+   "2016-11": -5257,
+   "2016-12": -8624,
+   "2017-01": 8391,
+   "2017-02": 4457,
+   "2017-03": 2176,
+   "2017-04": 617,
+   "2017-05": -2553,
+   "2017-06": -1673,
+   "2017-07": 4399,
+   "2017-08": 1392,
+   "2017-09": 6801,
+   "2017-10": 7117,
+   "2017-11": 3626,
+   "2017-12": 10338,
+   "2018-01": 3365,
+   "2018-02": -6373,
+   "2018-03": -13068,
+   "2018-04": 20983,
+   "2018-05": 6178,
+   "2018-06": -14258,
+   "2018-07": -1869,
+   "2018-08": 14561,
+   "2018-09": -13592,
+   "2018-10": -2505,
+   "2018-11": -9672,
+   "2018-12": -5681,
+   "2019-01": -8999,
+   "2019-02": -4157,
+   "2019-03": 5407,
+   "2019-04": -150,
+   "2019-05": 4071,
+   "2019-06": 655,
+   "2019-07": -6130,
+   "2019-08": -1959,
+   "2019-09": -1186,
+   "2019-10": -3985,
+   "2019-11": 1640,
+   "2019-12": 281,
+   "2020-01": 8824,
+   "2020-02": -9671,
+   "2020-03": -7788,
+   "2020-04": 18363,
+   "2020-05": 3308,
+   "2020-06": 20918,
+   "2020-07": 16128,
+   "2020-08": 23246,
+   "2020-09": 22881,
+   "2020-10": 16738,
+   "2020-11": 46653,
+   "2020-12": 5692,
+   "2021-01": -11556,
+   "2021-02": 55394,
+   "2021-03": -25526,
+   "2021-04": 15116,
+   "2021-05": 39497,
+   "2021-06": 5259,
+   "2021-07": -22359,
+   "2021-08": 104537,
+   "2021-09": 7437,
+   "2021-10": 6110,
+   "2021-11": 11267,
+   "2021-12": 41530,
+   "2022-01": 2961,
+   "2022-02": -15613,
+   "2022-03": 26258,
+   "2022-04": 7961,
+   "2022-05": -61952,
+   "2022-06": -60307,
+   "2022-07": 80702,
+   "2022-08": 46851,
+   "2022-09": -22242,
+   "2022-10": 23413,
+   "2022-11": 27941,
+   "2022-12": -57668,
+   "2023-01": -35465,
+   "2023-02": -42999,
+   "2023-03": 17280,
+   "2023-04": 87589,
+   "2023-05": 28460,
+   "2023-06": 80118,
+   "2023-07": 110077,
+   "2023-08": 132984,
+   "2023-09": 156457,
+   "2023-10": -68573,
+   "2023-11": 105558,
+   "2023-12": 98867,
+   "2024-01": 394645,
+   "2024-02": -184174,
+   "2024-03": -164946,
+   "2024-04": 120874,
+   "2024-05": 149102,
+   "2024-06": 56912,
+   "2024-07": 177327,
+   "2024-08": -28809,
+   "2024-09": 35359,
+   "2024-10": -77847,
+   "2024-11": -124696,
+   "2024-12": 85618,
+   "2025-01": -195166,
+   "2025-02": -191227,
+   "2025-03": 65315,
+   "2025-04": -18224,
+   "2025-05": 86836,
+   "2025-06": -5551,
+   "2025-07": -24814,
+   "2025-08": 50403,
+   "2025-09": -76270,
+   "2025-10": 102789,
+   "2025-11": 66481,
+   "2025-12": -5427,
+   "2026-01": -90008,
+   "2026-02": -14290,
+   "2026-03": -98549,
+   "2026-04": 194224,
+   "2026-05": 100006,
+   "2026-06": -134180,
+   "2026-07": -93414,
+   "2026-08": 153252,
+   "2026-09": -85477,
+   "2026-10": -5706,
+   "2026-11": 77120
+  },
+  "trades": [
+   {
+    "sym": "ASHOKLEY",
+    "buy": "2015-11-30",
+    "sell": "2016-01-19",
+    "pnl": -3172,
+    "pct": -15.9,
+    "weeks": 6.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "APLAPOLLO",
+    "buy": "2015-11-30",
+    "sell": "2016-02-04",
+    "pnl": 3473,
+    "pct": 17.4,
+    "weeks": 9.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "GODFRYPHLP",
+    "buy": "2016-01-28",
+    "sell": "2016-02-11",
+    "pnl": -2682,
+    "pct": -14.9,
+    "weeks": 2.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "KEI",
+    "buy": "2015-11-30",
+    "sell": "2016-02-12",
+    "pnl": -1411,
+    "pct": -7.1,
+    "weeks": 10.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "BAJAJFINSV",
+    "buy": "2015-11-30",
+    "sell": "2016-02-12",
+    "pnl": -2552,
+    "pct": -12.9,
+    "weeks": 10.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "AUROPHARMA",
+    "buy": "2016-02-25",
+    "sell": "2016-03-29",
+    "pnl": 3538,
+    "pct": 19.6,
+    "weeks": 4.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "GODFRYPHLP",
+    "buy": "2016-02-25",
+    "sell": "2016-04-27",
+    "pnl": -2711,
+    "pct": -14.8,
+    "weeks": 7.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "BRITANNIA",
+    "buy": "2015-11-30",
+    "sell": "2016-05-27",
+    "pnl": -1208,
+    "pct": -6.4,
+    "weeks": 24.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "ASHOKLEY",
+    "buy": "2016-05-27",
+    "sell": "2016-07-07",
+    "pnl": -2331,
+    "pct": -13.2,
+    "weeks": 5.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "KEI",
+    "buy": "2016-02-25",
+    "sell": "2016-07-25",
+    "pnl": 4930,
+    "pct": 26.9,
+    "weeks": 20.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "APLAPOLLO",
+    "buy": "2016-02-25",
+    "sell": "2016-09-30",
+    "pnl": 6496,
+    "pct": 35.4,
+    "weeks": 29.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "GODFRYPHLP",
+    "buy": "2016-04-29",
+    "sell": "2016-09-30",
+    "pnl": 6390,
+    "pct": 32.9,
+    "weeks": 21.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "BAJFINANCE",
+    "buy": "2016-03-29",
+    "sell": "2016-11-09",
+    "pnl": 7299,
+    "pct": 37.6,
+    "weeks": 30.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "GODFRYPHLP",
+    "buy": "2016-10-25",
+    "sell": "2016-11-10",
+    "pnl": -3242,
+    "pct": -13.1,
+    "weeks": 2.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "MUTHOOTFIN",
+    "buy": "2016-10-25",
+    "sell": "2016-11-17",
+    "pnl": -4255,
+    "pct": -16.9,
+    "weeks": 3.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "BIOCON",
+    "buy": "2016-07-25",
+    "sell": "2016-11-22",
+    "pnl": 667,
+    "pct": 3.5,
+    "weeks": 15.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "JSWSTEEL",
+    "buy": "2016-07-25",
+    "sell": "2016-12-23",
+    "pnl": -769,
+    "pct": -4.0,
+    "weeks": 20.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "BAJFINANCE",
+    "buy": "2016-11-24",
+    "sell": "2016-12-23",
+    "pnl": -1970,
+    "pct": -9.1,
+    "weeks": 4.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "VEDL",
+    "buy": "2016-11-24",
+    "sell": "2016-12-27",
+    "pnl": -1044,
+    "pct": -4.8,
+    "weeks": 4.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "TATASTEEL",
+    "buy": "2016-11-24",
+    "sell": "2017-03-21",
+    "pnl": 5985,
+    "pct": 27.5,
+    "weeks": 16.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "HINDZINC",
+    "buy": "2017-01-19",
+    "sell": "2017-05-08",
+    "pnl": -1332,
+    "pct": -6.4,
+    "weeks": 14.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "BIOCON",
+    "buy": "2016-11-24",
+    "sell": "2017-05-15",
+    "pnl": 3309,
+    "pct": 15.2,
+    "weeks": 23.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "INDIANB",
+    "buy": "2017-03-21",
+    "sell": "2017-06-13",
+    "pnl": 2616,
+    "pct": 10.7,
+    "weeks": 11.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIENSOL",
+    "buy": "2017-05-19",
+    "sell": "2017-06-13",
+    "pnl": 1913,
+    "pct": 8.5,
+    "weeks": 3.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "HINDALCO",
+    "buy": "2017-01-19",
+    "sell": "2017-07-17",
+    "pnl": 3313,
+    "pct": 16.1,
+    "weeks": 24.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "MOTILALOFS",
+    "buy": "2017-05-19",
+    "sell": "2017-07-19",
+    "pnl": -329,
+    "pct": -1.5,
+    "weeks": 8.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "INDIANB",
+    "buy": "2017-06-16",
+    "sell": "2017-08-11",
+    "pnl": -2973,
+    "pct": -12.4,
+    "weeks": 7.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIENSOL",
+    "buy": "2017-06-16",
+    "sell": "2017-08-14",
+    "pnl": -1257,
+    "pct": -5.2,
+    "weeks": 8.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "RECLTD",
+    "buy": "2017-07-17",
+    "sell": "2017-08-23",
+    "pnl": -4199,
+    "pct": -16.9,
+    "weeks": 5.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIENSOL",
+    "buy": "2017-09-13",
+    "sell": "2017-09-25",
+    "pnl": -3163,
+    "pct": -14.8,
+    "weeks": 1.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "VEDL",
+    "buy": "2017-01-19",
+    "sell": "2017-11-10",
+    "pnl": 8278,
+    "pct": 40.3,
+    "weeks": 40.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "ADANIENSOL",
+    "buy": "2017-10-12",
+    "sell": "2017-11-10",
+    "pnl": -835,
+    "pct": -4.6,
+    "weeks": 4.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "MOTILALOFS",
+    "buy": "2017-08-14",
+    "sell": "2017-12-05",
+    "pnl": 3144,
+    "pct": 13.6,
+    "weeks": 15.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "MOTILALOFS",
+    "buy": "2017-12-08",
+    "sell": "2018-01-30",
+    "pnl": -113,
+    "pct": -0.5,
+    "weeks": 6.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "TVSMOTOR",
+    "buy": "2017-09-13",
+    "sell": "2018-02-05",
+    "pnl": -301,
+    "pct": -1.4,
+    "weeks": 19.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIENSOL",
+    "buy": "2017-12-08",
+    "sell": "2018-02-05",
+    "pnl": -1070,
+    "pct": -4.8,
+    "weeks": 7.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "JINDALSTEL",
+    "buy": "2017-11-10",
+    "sell": "2018-03-06",
+    "pnl": 12011,
+    "pct": 44.1,
+    "weeks": 15.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "RADICO",
+    "buy": "2018-02-07",
+    "sell": "2018-03-08",
+    "pnl": -1940,
+    "pct": -9.0,
+    "weeks": 3.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIENSOL",
+    "buy": "2018-02-07",
+    "sell": "2018-03-09",
+    "pnl": -2095,
+    "pct": -9.6,
+    "weeks": 4.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "MOTILALOFS",
+    "buy": "2018-02-07",
+    "sell": "2018-03-26",
+    "pnl": -4148,
+    "pct": -18.9,
+    "weeks": 6.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "GODREJPROP",
+    "buy": "2018-03-09",
+    "sell": "2018-05-09",
+    "pnl": 4411,
+    "pct": 15.9,
+    "weeks": 8.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "ADANIENSOL",
+    "buy": "2018-04-10",
+    "sell": "2018-05-16",
+    "pnl": -4203,
+    "pct": -21.8,
+    "weeks": 5.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "KEI",
+    "buy": "2017-08-14",
+    "sell": "2018-06-06",
+    "pnl": 20054,
+    "pct": 86.0,
+    "weeks": 40.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "RADICO",
+    "buy": "2018-03-09",
+    "sell": "2018-06-06",
+    "pnl": 4453,
+    "pct": 16.1,
+    "weeks": 12.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "RADICO",
+    "buy": "2018-07-04",
+    "sell": "2018-07-17",
+    "pnl": -4770,
+    "pct": -15.6,
+    "weeks": 1.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "TATACONSUM",
+    "buy": "2018-06-06",
+    "sell": "2018-07-19",
+    "pnl": -2488,
+    "pct": -8.5,
+    "weeks": 6.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "RADICO",
+    "buy": "2018-08-01",
+    "sell": "2018-09-14",
+    "pnl": -895,
+    "pct": -3.3,
+    "weeks": 5.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "JUBLFOOD",
+    "buy": "2018-05-09",
+    "sell": "2018-09-24",
+    "pnl": 24,
+    "pct": 0.1,
+    "weeks": 18.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "COFORGE",
+    "buy": "2018-04-10",
+    "sell": "2018-09-27",
+    "pnl": 6332,
+    "pct": 32.5,
+    "weeks": 23.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "DIVISLAB",
+    "buy": "2018-06-06",
+    "sell": "2018-10-03",
+    "pnl": 7319,
+    "pct": 25.7,
+    "weeks": 16.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "RADICO",
+    "buy": "2018-10-03",
+    "sell": "2018-10-10",
+    "pnl": -3558,
+    "pct": -12.0,
+    "weeks": 1.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "LTM",
+    "buy": "2018-08-01",
+    "sell": "2018-10-25",
+    "pnl": -2009,
+    "pct": -7.6,
+    "weeks": 11.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "JUBLFOOD",
+    "buy": "2018-10-03",
+    "sell": "2018-10-26",
+    "pnl": -4241,
+    "pct": -14.4,
+    "weeks": 3.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "COFORGE",
+    "buy": "2018-10-03",
+    "sell": "2018-11-26",
+    "pnl": -3100,
+    "pct": -10.5,
+    "weeks": 7.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "LTM",
+    "buy": "2018-11-01",
+    "sell": "2018-12-10",
+    "pnl": -4354,
+    "pct": -17.1,
+    "weeks": 5.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIENT",
+    "buy": "2018-10-03",
+    "sell": "2018-12-11",
+    "pnl": 234,
+    "pct": 0.8,
+    "weeks": 9.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "BIOCON",
+    "buy": "2018-11-01",
+    "sell": "2019-01-02",
+    "pnl": -1404,
+    "pct": -5.3,
+    "weeks": 8.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "MPHASIS",
+    "buy": "2018-11-01",
+    "sell": "2019-01-17",
+    "pnl": -3543,
+    "pct": -13.2,
+    "weeks": 10.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIPOWER",
+    "buy": "2019-01-02",
+    "sell": "2019-01-29",
+    "pnl": -5570,
+    "pct": -21.9,
+    "weeks": 3.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIENT",
+    "buy": "2019-01-02",
+    "sell": "2019-02-05",
+    "pnl": -5798,
+    "pct": -22.9,
+    "weeks": 4.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "LTM",
+    "buy": "2019-01-02",
+    "sell": "2019-02-28",
+    "pnl": 98,
+    "pct": 0.4,
+    "weeks": 8.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "ASTRAL",
+    "buy": "2019-02-28",
+    "sell": "2019-04-02",
+    "pnl": 1972,
+    "pct": 8.8,
+    "weeks": 4.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "ADANIPOWER",
+    "buy": "2019-04-02",
+    "sell": "2019-05-02",
+    "pnl": -2143,
+    "pct": -8.7,
+    "weeks": 3.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "NESTLEIND",
+    "buy": "2019-01-30",
+    "sell": "2019-05-06",
+    "pnl": -2012,
+    "pct": -9.2,
+    "weeks": 12.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "COFORGE",
+    "buy": "2018-12-03",
+    "sell": "2019-06-03",
+    "pnl": 4585,
+    "pct": 17.4,
+    "weeks": 24.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "BAJFINANCE",
+    "buy": "2019-01-30",
+    "sell": "2019-07-26",
+    "pnl": 3765,
+    "pct": 17.4,
+    "weeks": 23.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "TIINDIA",
+    "buy": "2019-05-06",
+    "sell": "2019-07-29",
+    "pnl": -2806,
+    "pct": -13.4,
+    "weeks": 11.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIENSOL",
+    "buy": "2019-06-03",
+    "sell": "2019-07-30",
+    "pnl": -3002,
+    "pct": -11.8,
+    "weeks": 8.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "ADANIPOWER",
+    "buy": "2019-05-06",
+    "sell": "2019-08-23",
+    "pnl": 6507,
+    "pct": 30.7,
+    "weeks": 15.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "RECLTD",
+    "buy": "2019-07-30",
+    "sell": "2019-09-20",
+    "pnl": -2782,
+    "pct": -11.6,
+    "weeks": 6.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "PFC",
+    "buy": "2019-07-30",
+    "sell": "2019-10-09",
+    "pnl": -3650,
+    "pct": -15.3,
+    "weeks": 9.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "INDIGO",
+    "buy": "2019-09-30",
+    "sell": "2019-10-29",
+    "pnl": -5648,
+    "pct": -25.4,
+    "weeks": 3.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "DIVISLAB",
+    "buy": "2019-02-28",
+    "sell": "2019-11-01",
+    "pnl": 1449,
+    "pct": 6.6,
+    "weeks": 32.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "ADANIPOWER",
+    "buy": "2019-08-29",
+    "sell": "2019-11-18",
+    "pnl": 624,
+    "pct": 2.7,
+    "weeks": 10.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "SRF",
+    "buy": "2019-07-30",
+    "sell": "2019-12-02",
+    "pnl": 3531,
+    "pct": 14.8,
+    "weeks": 16.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "HDFCAMC",
+    "buy": "2019-11-01",
+    "sell": "2019-12-06",
+    "pnl": 1387,
+    "pct": 6.5,
+    "weeks": 4.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "INDIGO",
+    "buy": "2019-11-01",
+    "sell": "2019-12-17",
+    "pnl": -2559,
+    "pct": -12.4,
+    "weeks": 6.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "GODREJPROP",
+    "buy": "2019-11-01",
+    "sell": "2019-12-31",
+    "pnl": -891,
+    "pct": -4.3,
+    "weeks": 8.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "ADANIGREEN",
+    "buy": "2019-12-02",
+    "sell": "2020-01-16",
+    "pnl": 6699,
+    "pct": 29.3,
+    "weeks": 6.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ATGL",
+    "buy": "2019-12-02",
+    "sell": "2020-02-26",
+    "pnl": -1380,
+    "pct": -6.0,
+    "weeks": 12.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIGREEN",
+    "buy": "2020-01-28",
+    "sell": "2020-02-26",
+    "pnl": -2245,
+    "pct": -9.0,
+    "weeks": 4.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "DIXON",
+    "buy": "2019-12-31",
+    "sell": "2020-02-27",
+    "pnl": 881,
+    "pct": 3.8,
+    "weeks": 8.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "HDFCAMC",
+    "buy": "2019-12-31",
+    "sell": "2020-03-11",
+    "pnl": -2631,
+    "pct": -12.3,
+    "weeks": 9.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "PIIND",
+    "buy": "2019-12-31",
+    "sell": "2020-03-13",
+    "pnl": -3929,
+    "pct": -18.3,
+    "weeks": 10.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "TATACONSUM",
+    "buy": "2020-02-26",
+    "sell": "2020-03-13",
+    "pnl": -6122,
+    "pct": -26.2,
+    "weeks": 2.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "AUBANK",
+    "buy": "2020-03-26",
+    "sell": "2020-04-29",
+    "pnl": 1633,
+    "pct": 7.9,
+    "weeks": 4.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "TRENT",
+    "buy": "2020-03-26",
+    "sell": "2020-05-19",
+    "pnl": -1430,
+    "pct": -6.9,
+    "weeks": 6.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIGREEN",
+    "buy": "2020-03-26",
+    "sell": "2020-06-30",
+    "pnl": 27236,
+    "pct": 131.5,
+    "weeks": 12.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "DMART",
+    "buy": "2020-05-29",
+    "sell": "2020-07-17",
+    "pnl": -2778,
+    "pct": -14.9,
+    "weeks": 7.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "HDFCAMC",
+    "buy": "2020-03-26",
+    "sell": "2020-07-24",
+    "pnl": 3889,
+    "pct": 19.2,
+    "weeks": 16.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "PATANJALI",
+    "buy": "2020-07-24",
+    "sell": "2020-08-03",
+    "pnl": -2568,
+    "pct": -8.7,
+    "weeks": 1.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "MUTHOOTFIN",
+    "buy": "2020-08-21",
+    "sell": "2020-09-23",
+    "pnl": -4066,
+    "pct": -14.8,
+    "weeks": 4.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "TATACONSUM",
+    "buy": "2020-03-26",
+    "sell": "2020-09-25",
+    "pnl": 16277,
+    "pct": 78.6,
+    "weeks": 25.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "DIXON",
+    "buy": "2020-04-29",
+    "sell": "2020-09-25",
+    "pnl": 21959,
+    "pct": 97.1,
+    "weeks": 21.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "LAURUSLABS",
+    "buy": "2020-10-19",
+    "sell": "2020-11-05",
+    "pnl": -5427,
+    "pct": -15.6,
+    "weeks": 2.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIENT",
+    "buy": "2020-10-19",
+    "sell": "2020-11-17",
+    "pnl": 7007,
+    "pct": 19.3,
+    "weeks": 4.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "ADANIGREEN",
+    "buy": "2020-07-24",
+    "sell": "2020-12-15",
+    "pnl": 64907,
+    "pct": 218.6,
+    "weeks": 19.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "IDEA",
+    "buy": "2020-11-17",
+    "sell": "2020-12-16",
+    "pnl": 3185,
+    "pct": 8.7,
+    "weeks": 4.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "ADANIGREEN",
+    "buy": "2020-12-16",
+    "sell": "2021-01-13",
+    "pnl": -5046,
+    "pct": -9.3,
+    "weeks": 3.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "TATACOMM",
+    "buy": "2020-07-24",
+    "sell": "2021-03-24",
+    "pnl": 20714,
+    "pct": 70.2,
+    "weeks": 33.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "DIXON",
+    "buy": "2020-10-19",
+    "sell": "2021-03-26",
+    "pnl": 33342,
+    "pct": 98.8,
+    "weeks": 21.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIGREEN",
+    "buy": "2021-01-14",
+    "sell": "2021-04-01",
+    "pnl": 10235,
+    "pct": 18.7,
+    "weeks": 10.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "CGPOWER",
+    "buy": "2020-12-16",
+    "sell": "2021-04-23",
+    "pnl": 31454,
+    "pct": 58.0,
+    "weeks": 17.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ATGL",
+    "buy": "2021-04-15",
+    "sell": "2021-06-17",
+    "pnl": 16141,
+    "pct": 29.3,
+    "weeks": 8.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIGREEN",
+    "buy": "2021-04-15",
+    "sell": "2021-06-18",
+    "pnl": -2724,
+    "pct": -4.9,
+    "weeks": 8.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIENT",
+    "buy": "2021-04-15",
+    "sell": "2021-06-18",
+    "pnl": 12884,
+    "pct": 22.6,
+    "weeks": 8.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "CGPOWER",
+    "buy": "2021-05-17",
+    "sell": "2021-07-22",
+    "pnl": -9922,
+    "pct": -14.7,
+    "weeks": 9.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIENSOL",
+    "buy": "2021-07-12",
+    "sell": "2021-09-22",
+    "pnl": 38108,
+    "pct": 53.8,
+    "weeks": 9.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "LAURUSLABS",
+    "buy": "2020-11-17",
+    "sell": "2021-09-28",
+    "pnl": 37451,
+    "pct": 103.6,
+    "weeks": 42.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIENT",
+    "buy": "2021-07-12",
+    "sell": "2021-10-29",
+    "pnl": -2418,
+    "pct": -3.4,
+    "weeks": 15.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "JSWENERGY",
+    "buy": "2021-10-07",
+    "sell": "2021-11-03",
+    "pnl": -8743,
+    "pct": -9.8,
+    "weeks": 3.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIENSOL",
+    "buy": "2021-10-07",
+    "sell": "2021-12-21",
+    "pnl": -5382,
+    "pct": -6.1,
+    "weeks": 10.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "CGPOWER",
+    "buy": "2021-08-10",
+    "sell": "2022-01-25",
+    "pnl": 62063,
+    "pct": 106.6,
+    "weeks": 23.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ATGL",
+    "buy": "2021-07-12",
+    "sell": "2022-02-22",
+    "pnl": 46436,
+    "pct": 65.8,
+    "weeks": 30.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIENT",
+    "buy": "2021-11-08",
+    "sell": "2022-02-25",
+    "pnl": 4635,
+    "pct": 6.1,
+    "weeks": 15.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ATGL",
+    "buy": "2022-03-03",
+    "sell": "2022-04-01",
+    "pnl": 24706,
+    "pct": 25.0,
+    "weeks": 4.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "BSE",
+    "buy": "2022-03-03",
+    "sell": "2022-04-20",
+    "pnl": 24924,
+    "pct": 24.8,
+    "weeks": 6.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "NATIONALUM",
+    "buy": "2022-04-01",
+    "sell": "2022-04-26",
+    "pnl": -9342,
+    "pct": -10.2,
+    "weeks": 3.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "JSWENERGY",
+    "buy": "2021-11-08",
+    "sell": "2022-05-04",
+    "pnl": -3263,
+    "pct": -4.3,
+    "weeks": 24.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "CGPOWER",
+    "buy": "2022-02-02",
+    "sell": "2022-05-06",
+    "pnl": -3712,
+    "pct": -3.6,
+    "weeks": 12.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "BSE",
+    "buy": "2022-05-04",
+    "sell": "2022-05-11",
+    "pnl": -16532,
+    "pct": -16.0,
+    "weeks": 1.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIENSOL",
+    "buy": "2022-01-04",
+    "sell": "2022-05-12",
+    "pnl": 26830,
+    "pct": 32.2,
+    "weeks": 17.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "JSWENERGY",
+    "buy": "2022-06-01",
+    "sell": "2022-06-14",
+    "pnl": -16402,
+    "pct": -17.7,
+    "weeks": 1.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "TATAPOWER",
+    "buy": "2022-05-04",
+    "sell": "2022-06-17",
+    "pnl": -16350,
+    "pct": -15.8,
+    "weeks": 6.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "BSE",
+    "buy": "2022-06-01",
+    "sell": "2022-06-17",
+    "pnl": -19648,
+    "pct": -21.3,
+    "weeks": 2.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIPOWER",
+    "buy": "2022-06-01",
+    "sell": "2022-06-17",
+    "pnl": -15894,
+    "pct": -17.2,
+    "weeks": 2.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIPOWER",
+    "buy": "2022-06-29",
+    "sell": "2022-09-27",
+    "pnl": 27441,
+    "pct": 35.2,
+    "weeks": 12.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ATGL",
+    "buy": "2022-06-29",
+    "sell": "2022-10-04",
+    "pnl": 26972,
+    "pct": 34.7,
+    "weeks": 13.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "BSE",
+    "buy": "2022-06-29",
+    "sell": "2022-10-12",
+    "pnl": 259,
+    "pct": 0.3,
+    "weeks": 14.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIPOWER",
+    "buy": "2022-10-25",
+    "sell": "2022-12-13",
+    "pnl": -7750,
+    "pct": -8.1,
+    "weeks": 6.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "CGPOWER",
+    "buy": "2022-06-01",
+    "sell": "2022-12-22",
+    "pnl": 40741,
+    "pct": 43.8,
+    "weeks": 28.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "BDL",
+    "buy": "2022-06-29",
+    "sell": "2022-12-23",
+    "pnl": 14065,
+    "pct": 18.0,
+    "weeks": 24.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ATGL",
+    "buy": "2022-10-25",
+    "sell": "2022-12-26",
+    "pnl": -1736,
+    "pct": -1.8,
+    "weeks": 8.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "MAZDOCK",
+    "buy": "2022-12-22",
+    "sell": "2022-12-26",
+    "pnl": -17853,
+    "pct": -16.9,
+    "weeks": 0.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIENT",
+    "buy": "2022-10-25",
+    "sell": "2023-01-20",
+    "pnl": 3222,
+    "pct": 3.3,
+    "weeks": 12.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIPOWER",
+    "buy": "2022-12-22",
+    "sell": "2023-01-30",
+    "pnl": -20285,
+    "pct": -19.2,
+    "weeks": 5.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "BDL",
+    "buy": "2023-01-19",
+    "sell": "2023-02-16",
+    "pnl": -13261,
+    "pct": -13.9,
+    "weeks": 3.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ADANIPOWER",
+    "buy": "2023-02-17",
+    "sell": "2023-02-28",
+    "pnl": -10713,
+    "pct": -11.8,
+    "weeks": 1.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "RVNL",
+    "buy": "2023-02-17",
+    "sell": "2023-03-01",
+    "pnl": -16698,
+    "pct": -18.5,
+    "weeks": 1.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "MAZDOCK",
+    "buy": "2023-01-19",
+    "sell": "2023-03-16",
+    "pnl": -11328,
+    "pct": -11.9,
+    "weeks": 7.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "APARINDS",
+    "buy": "2023-02-17",
+    "sell": "2023-05-12",
+    "pnl": 5137,
+    "pct": 5.9,
+    "weeks": 10.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "RVNL",
+    "buy": "2023-03-20",
+    "sell": "2023-05-15",
+    "pnl": 76959,
+    "pct": 97.4,
+    "weeks": 7.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "INDIANB",
+    "buy": "2023-03-20",
+    "sell": "2023-05-26",
+    "pnl": 849,
+    "pct": 1.1,
+    "weeks": 8.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "VBL",
+    "buy": "2023-01-19",
+    "sell": "2023-08-16",
+    "pnl": 40613,
+    "pct": 42.6,
+    "weeks": 28.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "RVNL",
+    "buy": "2023-05-22",
+    "sell": "2023-09-22",
+    "pnl": 40022,
+    "pct": 37.0,
+    "weeks": 17.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "GVT&D",
+    "buy": "2023-06-19",
+    "sell": "2023-10-25",
+    "pnl": 91297,
+    "pct": 80.4,
+    "weeks": 17.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "MAZDOCK",
+    "buy": "2023-03-20",
+    "sell": "2023-10-26",
+    "pnl": 138870,
+    "pct": 176.8,
+    "weeks": 29.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "SUZLON",
+    "buy": "2023-08-16",
+    "sell": "2023-12-21",
+    "pnl": 95533,
+    "pct": 70.3,
+    "weeks": 17.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "RVNL",
+    "buy": "2023-10-13",
+    "sell": "2024-02-12",
+    "pnl": 84735,
+    "pct": 57.2,
+    "weeks": 16.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "IRFC",
+    "buy": "2023-11-13",
+    "sell": "2024-02-13",
+    "pnl": 157736,
+    "pct": 76.2,
+    "weeks": 12.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "RECLTD",
+    "buy": "2023-11-13",
+    "sell": "2024-02-29",
+    "pnl": 62387,
+    "pct": 30.1,
+    "weeks": 14.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "BSE",
+    "buy": "2024-01-11",
+    "sell": "2024-03-13",
+    "pnl": -3700,
+    "pct": -1.6,
+    "weeks": 8.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "GVT&D",
+    "buy": "2024-02-12",
+    "sell": "2024-03-28",
+    "pnl": -914,
+    "pct": -0.4,
+    "weeks": 6.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "APARINDS",
+    "buy": "2023-05-22",
+    "sell": "2024-04-12",
+    "pnl": 174889,
+    "pct": 164.7,
+    "weeks": 44.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "BSE",
+    "buy": "2024-04-12",
+    "sell": "2024-05-10",
+    "pnl": -12605,
+    "pct": -5.6,
+    "weeks": 3.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "RECLTD",
+    "buy": "2024-04-12",
+    "sell": "2024-06-05",
+    "pnl": 13144,
+    "pct": 5.8,
+    "weeks": 7.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "BSE",
+    "buy": "2024-05-14",
+    "sell": "2024-07-09",
+    "pnl": -17700,
+    "pct": -8.3,
+    "weeks": 7.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "GVT&D",
+    "buy": "2024-04-12",
+    "sell": "2024-07-24",
+    "pnl": 120731,
+    "pct": 53.9,
+    "weeks": 13.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "IRFC",
+    "buy": "2024-03-12",
+    "sell": "2024-07-26",
+    "pnl": 81089,
+    "pct": 29.7,
+    "weeks": 18.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "COCHINSHIP",
+    "buy": "2024-06-12",
+    "sell": "2024-08-06",
+    "pnl": 61183,
+    "pct": 25.6,
+    "weeks": 7.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "COCHINSHIP",
+    "buy": "2024-08-09",
+    "sell": "2024-08-21",
+    "pnl": -54067,
+    "pct": -16.4,
+    "weeks": 1.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "IRFC",
+    "buy": "2024-08-09",
+    "sell": "2024-09-20",
+    "pnl": -48165,
+    "pct": -14.4,
+    "weeks": 5.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "SUZLON",
+    "buy": "2024-03-12",
+    "sell": "2024-10-08",
+    "pnl": 197381,
+    "pct": 72.3,
+    "weeks": 28.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "COCHINSHIP",
+    "buy": "2024-09-09",
+    "sell": "2024-10-08",
+    "pnl": -45714,
+    "pct": -16.6,
+    "weeks": 4.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "BSE",
+    "buy": "2024-07-11",
+    "sell": "2024-10-28",
+    "pnl": 156799,
+    "pct": 80.5,
+    "weeks": 14.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "OIL",
+    "buy": "2024-10-08",
+    "sell": "2024-10-28",
+    "pnl": -43581,
+    "pct": -13.1,
+    "weeks": 2.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "POWERINDIA",
+    "buy": "2024-11-05",
+    "sell": "2024-11-14",
+    "pnl": -43826,
+    "pct": -13.6,
+    "weeks": 1.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "COCHINSHIP",
+    "buy": "2024-11-05",
+    "sell": "2024-11-19",
+    "pnl": -38142,
+    "pct": -11.8,
+    "weeks": 1.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "GODFRYPHLP",
+    "buy": "2024-12-05",
+    "sell": "2024-12-24",
+    "pnl": -24256,
+    "pct": -8.6,
+    "weeks": 2.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "RVNL",
+    "buy": "2024-10-08",
+    "sell": "2024-12-31",
+    "pnl": -23273,
+    "pct": -7.0,
+    "weeks": 11.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "POWERINDIA",
+    "buy": "2024-12-05",
+    "sell": "2025-01-14",
+    "pnl": 14008,
+    "pct": 5.0,
+    "weeks": 5.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "TRENT",
+    "buy": "2024-11-05",
+    "sell": "2025-01-15",
+    "pnl": -37522,
+    "pct": -11.9,
+    "weeks": 9.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "OFSS",
+    "buy": "2025-01-03",
+    "sell": "2025-01-15",
+    "pnl": -44810,
+    "pct": -15.8,
+    "weeks": 1.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "GODFRYPHLP",
+    "buy": "2025-01-03",
+    "sell": "2025-01-17",
+    "pnl": -44328,
+    "pct": -15.4,
+    "weeks": 2.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "GVT&D",
+    "buy": "2024-08-09",
+    "sell": "2025-01-22",
+    "pnl": 11588,
+    "pct": 3.5,
+    "weeks": 22.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "GVT&D",
+    "buy": "2025-01-31",
+    "sell": "2025-02-17",
+    "pnl": -53050,
+    "pct": -19.1,
+    "weeks": 2.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "POWERINDIA",
+    "buy": "2025-01-31",
+    "sell": "2025-02-18",
+    "pnl": -35808,
+    "pct": -12.9,
+    "weeks": 2.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "MOTILALOFS",
+    "buy": "2025-01-31",
+    "sell": "2025-02-28",
+    "pnl": -27261,
+    "pct": -9.8,
+    "weeks": 4.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "BSE",
+    "buy": "2025-01-31",
+    "sell": "2025-03-03",
+    "pnl": -34897,
+    "pct": -12.6,
+    "weeks": 4.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "DIXON",
+    "buy": "2025-01-31",
+    "sell": "2025-04-08",
+    "pnl": -32922,
+    "pct": -12.4,
+    "weeks": 9.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "MAZDOCK",
+    "buy": "2025-02-28",
+    "sell": "2025-04-08",
+    "pnl": 38796,
+    "pct": 15.9,
+    "weeks": 5.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "GVT&D",
+    "buy": "2025-02-28",
+    "sell": "2025-04-08",
+    "pnl": -15742,
+    "pct": -6.4,
+    "weeks": 5.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "MAZDOCK",
+    "buy": "2025-05-05",
+    "sell": "2025-06-17",
+    "pnl": 10298,
+    "pct": 4.2,
+    "weeks": 6.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "DIXON",
+    "buy": "2025-05-05",
+    "sell": "2025-06-20",
+    "pnl": -38028,
+    "pct": -15.4,
+    "weeks": 6.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "BSE",
+    "buy": "2025-04-01",
+    "sell": "2025-07-09",
+    "pnl": 71744,
+    "pct": 35.1,
+    "weeks": 13.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "MAZDOCK",
+    "buy": "2025-06-30",
+    "sell": "2025-07-28",
+    "pnl": -26206,
+    "pct": -11.3,
+    "weeks": 4.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "MCX",
+    "buy": "2025-06-30",
+    "sell": "2025-08-01",
+    "pnl": -32472,
+    "pct": -13.7,
+    "weeks": 4.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "BSE",
+    "buy": "2025-07-28",
+    "sell": "2025-09-01",
+    "pnl": -32937,
+    "pct": -13.8,
+    "weeks": 4.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "POWERINDIA",
+    "buy": "2025-07-28",
+    "sell": "2025-10-01",
+    "pnl": -16909,
+    "pct": -7.3,
+    "weeks": 9.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "GODFRYPHLP",
+    "buy": "2025-05-05",
+    "sell": "2025-10-27",
+    "pnl": 29246,
+    "pct": 11.7,
+    "weeks": 24.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "FORTIS",
+    "buy": "2025-10-24",
+    "sell": "2025-12-04",
+    "pnl": -33681,
+    "pct": -15.5,
+    "weeks": 5.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "PAYTM",
+    "buy": "2025-02-28",
+    "sell": "2025-12-22",
+    "pnl": 213174,
+    "pct": 86.7,
+    "weeks": 40.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "POWERINDIA",
+    "buy": "2025-12-22",
+    "sell": "2026-01-19",
+    "pnl": -35458,
+    "pct": -12.7,
+    "weeks": 3.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "LAURUSLABS",
+    "buy": "2025-08-26",
+    "sell": "2026-02-03",
+    "pnl": 33156,
+    "pct": 15.4,
+    "weeks": 21.6,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "BSE",
+    "buy": "2025-09-24",
+    "sell": "2026-02-19",
+    "pnl": 67477,
+    "pct": 33.1,
+    "weeks": 20.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "MUTHOOTFIN",
+    "buy": "2025-12-22",
+    "sell": "2026-02-19",
+    "pnl": -25545,
+    "pct": -8.8,
+    "weeks": 8.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "LTF",
+    "buy": "2025-11-24",
+    "sell": "2026-03-05",
+    "pnl": -17279,
+    "pct": -6.2,
+    "weeks": 13.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "HINDCOPPER",
+    "buy": "2026-02-19",
+    "sell": "2026-03-16",
+    "pnl": -45688,
+    "pct": -16.7,
+    "weeks": 3.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "ABCAPITAL",
+    "buy": "2026-01-21",
+    "sell": "2026-03-24",
+    "pnl": -42239,
+    "pct": -15.3,
+    "weeks": 8.4,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "MCX",
+    "buy": "2026-02-19",
+    "sell": "2026-06-02",
+    "pnl": 54284,
+    "pct": 19.8,
+    "weeks": 13.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "HINDCOPPER",
+    "buy": "2026-03-20",
+    "sell": "2026-06-09",
+    "pnl": 18457,
+    "pct": 7.5,
+    "weeks": 10.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "NATIONALUM",
+    "buy": "2026-02-19",
+    "sell": "2026-06-12",
+    "pnl": 25364,
+    "pct": 9.3,
+    "weeks": 14.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "GVT&D",
+    "buy": "2026-03-20",
+    "sell": "2026-07-06",
+    "pnl": 42280,
+    "pct": 17.2,
+    "weeks": 13.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "POWERINDIA",
+    "buy": "2026-04-23",
+    "sell": "2026-07-06",
+    "pnl": 3990,
+    "pct": 1.9,
+    "weeks": 9.8,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "NATIONALUM",
+    "buy": "2026-06-22",
+    "sell": "2026-09-16",
+    "pnl": -21892,
+    "pct": -7.3,
+    "weeks": 12.0,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "HINDCOPPER",
+    "buy": "2026-06-22",
+    "sell": "2026-09-17",
+    "pnl": -14922,
+    "pct": -5.0,
+    "weeks": 12.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "IDEA",
+    "buy": "2026-07-21",
+    "sell": "2026-10-01",
+    "pnl": -13088,
+    "pct": -5.1,
+    "weeks": 10.2,
+    "why": "Trailing stop"
+   },
+   {
+    "sym": "GVT&D",
+    "buy": "2026-07-21",
+    "sell": "2026-10-15",
+    "pnl": -21517,
+    "pct": -8.6,
+    "weeks": 12.0,
+    "why": "Fell out of the top 20"
+   },
+   {
+    "sym": "APARINDS",
+    "buy": "2026-09-16",
+    "sell": "2026-10-19",
+    "pnl": -10295,
+    "pct": -3.9,
+    "weeks": 4.4,
+    "why": "Trailing stop"
+   }
+  ]
  }
 }
