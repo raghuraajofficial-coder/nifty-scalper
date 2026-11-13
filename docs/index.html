@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%232a78d6'/%3E%3Cpath d='M3 11l3-3 2 2 5-5' fill='none' stroke='%23fff' stroke-width='1.8'/%3E%3C/svg%3E">
 <title>Momentum paper portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -137,6 +138,7 @@
   .day .n { font-size: 11px; color: var(--ink2); } .day .a { font-size: 12px; font-weight: 650; margin-top: auto; white-space: nowrap; } .day .c { font-size: 10.5px; color: var(--ink2); }
   .mcal { grid-template-columns: repeat(3, 1fr); gap: 6px; } .mcal .day { min-height: 76px; padding: 7px 9px; } .mcal .day .n { font-size: 12.5px; font-weight: 600; } .mcal .day .a { font-size: 14px; }
   .heat td[data-ym] { cursor: pointer; }
+  .heat th.yr, .heat td.yr { text-align: right; white-space: nowrap; padding-left: 14px; cursor: help; } .heat td.yr b { display: block; font-size: 13px; } .heat td.yr span { font-size: 11.5px; opacity: .85; }
   .chip { all: unset; cursor: pointer; font-size: 12px; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--rule); color: var(--ink2); }
 
   @media (max-width: 900px) {
@@ -200,13 +202,14 @@
 </div>
 <script>
 const $ = id => document.getElementById(id);
-const inr = n => '₹' + Math.abs(Math.round(n)).toLocaleString('en-IN');
-const signed = n => (n > 0 ? '+' : n < 0 ? '−' : '') + inr(n);
-const pct = (n, d = 1) => (n > 0 ? '+' : n < 0 ? '−' : '') + Math.abs(n).toFixed(d) + '%';
+const ok = n => n != null && n !== '' && Number.isFinite(Number(n));
+const inr = n => ok(n) ? '₹' + Math.abs(Math.round(n)).toLocaleString('en-IN') : '–';
+const signed = n => ok(n) ? (n > 0 ? '+' : n < 0 ? '−' : '') + inr(n) : '–';
+const pct = (n, d = 1) => ok(n) ? (n > 0 ? '+' : n < 0 ? '−' : '') + Math.abs(n).toFixed(d) + '%' : '–';
 const cls = n => n > 0 ? 'up' : n < 0 ? 'down' : '';
-const px = n => n == null ? '–' : Number(n).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const px = n => !ok(n) ? '–' : Number(n).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const day = s => Number(s.slice(8, 10)) + ' ' + MONTHS[Number(s.slice(5, 7)) - 1].slice(0, 3) + ' ' + s.slice(0, 4);
+const day = s => !/^\d{4}-\d{2}-\d{2}/.test(s || '') ? '–' : Number(s.slice(8, 10)) + ' ' + MONTHS[Number(s.slice(5, 7)) - 1].slice(0, 3) + ' ' + s.slice(0, 4);
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 let P = null, B = null, D = null;
 
@@ -341,26 +344,38 @@ function renderBacktest() {
       {name: 'Nifty 50', c: css('--s3'), v: f.curve.map(c => c[2])}],
     {w: 1060, h: 360, log: true, endLabels: true, fmt: lakh, xfmt: d => d.slice(0, 4), xfull: d => MONTHS[Number(d.slice(5)) - 1] + ' ' + d.slice(0, 4), label: 'Growth of one lakh rupees under these rules, against the same 200 stocks held equally and the Nifty 50'});
   const years = [...new Set(Object.keys(f.months).map(k => k.slice(0, 4)))];
-  $('heat').innerHTML = `<table class="heat"><thead><tr><th>Year</th>${MONTHS.map(m => `<th>${m.slice(0, 3)}</th>`).join('')}</tr></thead><tbody>` + years.map(y => `<tr><th>${y}</th>` + MONTHS.map((m, i) => {
+  $('heat').innerHTML = `<table class="heat"><thead><tr><th>Year</th>${MONTHS.map(m => `<th>${m.slice(0, 3)}</th>`).join('')}<th class="yr">Full year</th></tr></thead><tbody>` + years.map(y => `<tr><th>${y}</th>` + MONTHS.map((m, i) => {
       const v = f.months[y + '-' + String(i + 1).padStart(2, '0')];
       if (v == null) return '<td></td>';
       const al = Math.min(.85, .08 + Math.abs(v) / 20);
       return `<td data-ym="${y}-${String(i + 1).padStart(2, '0')}" style="background:rgba(${css(v >= 0 ? '--up-bg' : '--down-bg')},${v === 0 ? 0 : al.toFixed(2)})" title="${m} ${y}: ${pct(v)}">${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(1)}</td>`;
-    }).join('') + '</tr>').join('') + '</tbody></table>';
+    }).join('') + (s => s ? `<td class="yr ${cls(s.chg)}" title="${s.tip}" aria-label="${s.tip}"><b class="fig">${signed(s.chg)}</b><span>${pct(s.pct)}</span></td>` : '<td class="yr">–</td>')(yearStats(y)) + '</tr>').join('') + '</tbody></table>';
   if (!bYear || !years.includes(bYear)) bYear = years[years.length - 1];
   renderMonths();
 }
 let bYear = null, bSel = null;
+/* Portfolio value at the start and end of a year, from the month-end values in the curve. */
+function yearStats(y) {
+  const c = (B.featured.curve || []).filter(r => ok(r[1])), idx = c.map((r, i) => r[0].startsWith(y) ? i : -1).filter(i => i >= 0);
+  if (!idx.length) return null;
+  const a = idx[0], z = idx[idx.length - 1], first = c[a][0], last = c[z][0];
+  const start = a > 0 ? c[a - 1][1] : (B.capital || 100000), end = c[z][1], chg = end - start;
+  const mn = k => MONTHS[Number(k.slice(5)) - 1], whole = first.endsWith('-01') && last.endsWith('-12');
+  const tip = `${y}: ${inr(start)} at the start of ${mn(first)}, ${inr(end)} at the end of ${mn(last)}. ${signed(chg)} (${pct(chg / start * 100)})` + (whole ? '' : ', part of the year only');
+  return {start, end, chg, pct: chg / start * 100, tip};
+}
 function renderMonths() {
-  const f = B.featured, years = [...new Set(Object.keys(f.months).map(k => k.slice(0, 4)))], rup = f.rupees || {}, tr = f.trades || [];
+  const f = B.featured, years = [...new Set(Object.keys(f.months).map(k => k.slice(0, 4)))], tr = f.trades || [];
+  let rup = f.rupees;
+  if (!rup) { rup = {}; (f.curve || []).forEach((c, i, a) => { if (i && ok(c[1]) && ok(a[i - 1][1])) rup[c[0]] = c[1] - a[i - 1][1]; }); }
   $('byear').textContent = bYear;
-  const yt = Object.entries(rup).filter(([k]) => k.startsWith(bYear)).reduce((x, [, v]) => x + v, 0);
-  $('bytotal').textContent = signed(yt); $('bytotal').className = cls(yt);
+  const ys = yearStats(bYear), yt = ys ? ys.chg : Object.entries(rup).filter(([k]) => k.startsWith(bYear)).reduce((x, [, v]) => x + (ok(v) ? v : 0), 0);
+  $('bytotal').textContent = signed(yt) + (ys ? ' (' + pct(ys.pct) + ')' : ''); $('bytotal').className = cls(yt); $('bytotal').title = ys ? ys.tip : ''; $('bytotal').style.cursor = ys ? 'help' : '';
   $('bcal').innerHTML = MONTHS.map((m, i) => {
     const k = bYear + '-' + String(i + 1).padStart(2, '0'), p = f.months[k], r = rup[k], n = tr.filter(t => t.sell.startsWith(k)).length;
     if (p == null) return `<div class="day"><span class="n">${m.slice(0, 3)}</span></div>`;
-    const tip = `${m} ${bYear}: ${signed(r)} (${pct(p)}), ${n} stock${n === 1 ? '' : 's'} sold`;
-    return `<button class="day t ${r > 0 ? 'pos' : r < 0 ? 'neg' : ''}${bSel === k ? ' sel' : ''}" data-m="${k}" title="${tip}" aria-label="${tip}"><span class="n">${m.slice(0, 3)}</span><span class="a fig">${signed(r)}</span><span class="c">${pct(p)}${n ? ', ' + n + ' sold' : ''}</span></button>`;
+    const tip = `${m} ${bYear}: ${ok(r) ? signed(r) + ' (' + pct(p) + ')' : pct(p)}, ${n} stock${n === 1 ? '' : 's'} sold`;
+    return `<button class="day t ${r > 0 ? 'pos' : r < 0 ? 'neg' : ''}${bSel === k ? ' sel' : ''}" data-m="${k}" title="${tip}" aria-label="${tip}"><span class="n">${m.slice(0, 3)}</span><span class="a fig">${ok(r) ? signed(r) : pct(p)}</span><span class="c">${ok(r) ? pct(p) : ''}${n ? (ok(r) ? ', ' : '') + n + ' sold' : ''}</span></button>`;
   }).join('');
   $('bprev').disabled = bYear <= years[0]; $('bnext').disabled = bYear >= years[years.length - 1];
   const scope = bSel || bYear, rows = tr.filter(t => t.sell.startsWith(scope)).reverse();
@@ -368,6 +383,7 @@ function renderMonths() {
   $('bclear').hidden = !bSel;
   $('btable').innerHTML = rows.length ? `<table class="lt"><thead><tr><th>Stock</th><th>Bought</th><th>Sold</th><th>Held</th><th>Result</th><th>Why it was sold</th></tr></thead><tbody>` +
     rows.map(t => `<tr><td><b>${t.sym}</b></td><td>${day(t.buy)}</td><td>${day(t.sell)}</td><td>${t.weeks} wk</td><td class="${cls(t.pnl)}"><b>${signed(t.pnl)}</b> (${pct(t.pct)})</td><td>${t.why}</td></tr>`).join('') + '</tbody></table>'
+    : !f.trades ? '<div class="empty">The list of stocks sold is being recalculated. Refresh in a few minutes.</div>'
     : `<div class="empty">Nothing was sold in this ${bSel ? 'month' : 'year'}. The month's result comes from price changes in the stocks still held.</div>`;
 }
 $('p-backtest').onclick = e => {
@@ -436,11 +452,11 @@ function setMode(m) {
   $('m-paper').setAttribute('aria-pressed', m === 'paper'); $('m-backtest').setAttribute('aria-pressed', m === 'backtest');
   const ds = Object.keys(byDay()).sort(); ym = (ds.length ? ds[ds.length - 1] : D.status.now).slice(0, 7); renderLab();
 }
-function shift(n) { let [y, m] = ym.split('-').map(Number); m += n; if (m < 1) { m = 12; y--; } if (m > 12) { m = 1; y++; } ym = y + '-' + String(m).padStart(2, '0'); renderCal(); }
+function shift(n) { if (!D || !ym) return; let [y, m] = ym.split('-').map(Number); m += n; if (m < 1) { m = 12; y--; } if (m > 12) { m = 1; y++; } ym = y + '-' + String(m).padStart(2, '0'); renderCal(); }
 $('m-paper').onclick = () => D && setMode('paper'); $('m-backtest').onclick = () => D && setMode('backtest');
 $('prev').onclick = () => shift(-1); $('next').onclick = () => shift(1);
-$('clear').onclick = () => { selDay = null; renderCal(); renderTable(); };
-$('cal').onclick = e => { const b = e.target.closest('[data-d]'); if (!b) return; selDay = selDay === b.dataset.d ? null : b.dataset.d; renderCal(); renderTable(); };
+$('clear').onclick = () => { if (!D) return; selDay = null; renderCal(); renderTable(); };
+$('cal').onclick = e => { const b = e.target.closest('[data-d]'); if (!b || !D) return; selDay = selDay === b.dataset.d ? null : b.dataset.d; renderCal(); renderTable(); };
 
 /* ---------- tabs and loading ---------- */
 const TABS = ['portfolio', 'backtest', 'lab'];
