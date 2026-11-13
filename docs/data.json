@@ -182,14 +182,14 @@
     "sig_time": "2026-09-15 09:25:00",
     "entry_time": "2026-09-15 09:25:00",
     "entry": 2433.73,
-    "stop": 2418.52,
+    "stop": 2418.53,
     "target": null,
     "exit_time": "2026-09-15 09:50:00",
-    "exit": 2417.79,
+    "exit": 2417.81,
     "reason": "stop",
-    "gross": -509.96,
+    "gross": -509.5,
     "cost": 74.69,
-    "net": -584.65
+    "net": -584.19
    },
    {
     "sym": "PHOENIXLTD",
@@ -470,14 +470,14 @@
     "sig_time": "2026-09-24 09:25:00",
     "entry_time": "2026-09-24 09:25:00",
     "entry": 1689.61,
-    "stop": 1679.24,
+    "stop": 1679.26,
     "target": null,
     "exit_time": "2026-09-24 09:30:00",
-    "exit": 1678.74,
+    "exit": 1678.75,
     "reason": "stop",
-    "gross": -488.98,
+    "gross": -488.42,
     "cost": 74.04,
-    "net": -563.02
+    "net": -562.46
    },
    {
     "sym": "GLENMARK",
@@ -614,14 +614,14 @@
     "sig_time": "2026-09-30 12:20:00",
     "entry_time": "2026-09-30 12:20:00",
     "entry": 4695.51,
-    "stop": 4668.48,
+    "stop": 4668.58,
     "target": null,
     "exit_time": "2026-09-30 14:30:00",
-    "exit": 4667.08,
+    "exit": 4667.18,
     "reason": "stop",
-    "gross": -454.92,
+    "gross": -453.29,
     "cost": 73.73,
-    "net": -528.65
+    "net": -527.02
    },
    {
     "sym": "KOTAKBANK",
@@ -1077,15 +1077,15 @@
     "qty": 7,
     "sig_time": "2026-10-21 11:10:00",
     "entry_time": "2026-10-21 11:10:00",
-    "entry": 6666.5,
-    "stop": 6721.58,
+    "entry": 6669.0,
+    "stop": 6724.08,
     "target": null,
     "exit_time": "2026-10-21 15:05:00",
     "exit": 6557.97,
     "reason": "time",
-    "gross": 759.73,
+    "gross": 777.22,
     "cost": 63.71,
-    "net": 696.02
+    "net": 713.51
    },
    {
     "sym": "PIIND",
