@@ -47,6 +47,7 @@ class Cfg:
     hold: int = 20                           # trading days between reviews
     market_filter: bool = True
     stop_pct: float = 0.0                    # per-stock stop on closing price (0 = off)
+    trail_pct: float = 0.0                   # per-stock trailing stop below the highest close since purchase (0 = off)
     slip: float = 0.001
 
 
@@ -124,6 +125,10 @@ def simulate(close, open_, nifty, c: Cfg, start: int):
             pending, stops = None, set()
         if c.stop_pct:
             stops = {s for s, p in pos.items() if last.at[d, s] < p["entry"] * (1 - c.stop_pct)}
+        if c.trail_pct:
+            for s, p in pos.items():
+                p["peak"] = max(p.get("peak", p["entry"]), last.at[d, s])
+            stops |= {s for s, p in pos.items() if last.at[d, s] < p["peak"] * (1 - c.trail_pct)}
         if (i - start) % c.hold == 0:
             if c.market_filter and not nifty.at[d] > ma.at[d]:
                 pending = []
@@ -175,6 +180,10 @@ VARIANTS = [
     ("D. Base holding the top 10", dict(top_n=10)),
     ("E. Base with a 10% stop-loss per stock", dict(stop_pct=0.10)),
     ("F. Base reviewed every 6 weeks", dict(hold=30)),
+    ("G. Base with a 10% trailing stop per stock", dict(trail_pct=0.10)),
+    ("H. Base with a 15% trailing stop per stock", dict(trail_pct=0.15)),
+    ("I. Base with a 20% trailing stop per stock", dict(trail_pct=0.20)),
+    ("J. No market filter, 15% trailing stop per stock", dict(market_filter=False, trail_pct=0.15)),
 ]
 
 
