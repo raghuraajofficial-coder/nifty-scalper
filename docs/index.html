@@ -135,6 +135,8 @@
   .day.t { cursor: pointer; } .day.pos { background: rgba(var(--up-bg), .2); } .day.neg { background: rgba(var(--down-bg), .2); }
   .day.sel { box-shadow: inset 0 0 0 2px var(--ink); } .day.blank { background: none; }
   .day .n { font-size: 11px; color: var(--ink2); } .day .a { font-size: 12px; font-weight: 650; margin-top: auto; white-space: nowrap; } .day .c { font-size: 10.5px; color: var(--ink2); }
+  .mcal { grid-template-columns: repeat(3, 1fr); gap: 6px; } .mcal .day { min-height: 76px; padding: 7px 9px; } .mcal .day .n { font-size: 12.5px; font-weight: 600; } .mcal .day .a { font-size: 14px; }
+  .heat td[data-ym] { cursor: pointer; }
   .chip { all: unset; cursor: pointer; font-size: 12px; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--rule); color: var(--ink2); }
 
   @media (max-width: 900px) {
@@ -322,7 +324,11 @@ function renderBacktest() {
       <div><dt>Worst month</dt><dd class="fig down">${pct(mo.worst)}<small>best month ${pct(mo.best)}</small></dd></div>
       <div><dt>Months in profit</dt><dd class="fig">${mo.up_pct.toFixed(0)}%<small>a typical month made ${pct(mo.median)}</small></dd></div></dl>
       <div class="block"><h2>Growth of ₹1 lakh</h2><p class="sub">Drawn on a ratio scale, so equal distances are equal percentage moves.</p><div class="chart" id="btchart"></div></div>
-      <div class="block"><h2>Every month, one by one</h2><p class="sub">Percentage change in the portfolio each month. Stronger colour means a bigger move.</p><div class="tw" id="heat"></div></div>`;
+      <div class="block"><h2>Profit and loss by month</h2><p class="sub">Change in the portfolio's value each month, in rupees and per cent. Amounts grow over the years because the gains are reinvested. Pick a month to see the stocks sold in it.</p>
+        <div class="lab"><section class="card"><div class="head"><h3 id="byear"></h3><span id="bytotal" style="font-weight:650"></span><span class="sp"></span>
+            <button class="nav" id="bprev" aria-label="Previous year">‹</button><button class="nav" id="bnext" aria-label="Next year">›</button></div><div class="cal mcal" id="bcal"></div></section>
+          <section class="card"><div class="head"><h3 id="bttl"></h3><span class="sp"></span><button class="chip" id="bclear" hidden>Show the whole year ✕</button></div><div class="tw" id="btable"></div></section></div></div>
+      <div class="block"><h2>All years at a glance</h2><p class="sub">Percentage change each month. Stronger colour means a bigger move. Pick a cell to open that month above.</p><div class="tw" id="heat"></div></div>`;
   }
   h += `<div class="block"><h2>Versions tested</h2><p class="sub">The highlighted row is the one the paper portfolio follows.</p><div class="tw"><table class="lt"><thead><tr><th>Version</th><th>Return per year</th><th>Deepest fall</th><th>Worst month</th><th>Worst year</th><th>Losing years</th><th>Trades</th><th>₹1 lakh became</th></tr></thead><tbody>` +
     B.rows.map(r => `<tr class="${f && r.name === f.name ? 'pick' : ''}"><td>${r.name.slice(3)}</td><td>${r.after_tax.cagr}%</td><td>−${r.after_tax.maxdd}%</td><td>${pct(r.after_tax.monthly.worst)}</td><td>${pct(r.after_tax.worst_year)}</td><td>${r.after_tax.down_years}</td><td>${r.trades}</td><td>${lakh(r.after_tax.final)}</td></tr>`).join('') +
@@ -339,9 +345,43 @@ function renderBacktest() {
       const v = f.months[y + '-' + String(i + 1).padStart(2, '0')];
       if (v == null) return '<td></td>';
       const al = Math.min(.85, .08 + Math.abs(v) / 20);
-      return `<td style="background:rgba(${css(v >= 0 ? '--up-bg' : '--down-bg')},${v === 0 ? 0 : al.toFixed(2)})" title="${m} ${y}: ${pct(v)}">${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(1)}</td>`;
+      return `<td data-ym="${y}-${String(i + 1).padStart(2, '0')}" style="background:rgba(${css(v >= 0 ? '--up-bg' : '--down-bg')},${v === 0 ? 0 : al.toFixed(2)})" title="${m} ${y}: ${pct(v)}">${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toFixed(1)}</td>`;
     }).join('') + '</tr>').join('') + '</tbody></table>';
+  if (!bYear || !years.includes(bYear)) bYear = years[years.length - 1];
+  renderMonths();
 }
+let bYear = null, bSel = null;
+function renderMonths() {
+  const f = B.featured, years = [...new Set(Object.keys(f.months).map(k => k.slice(0, 4)))], rup = f.rupees || {}, tr = f.trades || [];
+  $('byear').textContent = bYear;
+  const yt = Object.entries(rup).filter(([k]) => k.startsWith(bYear)).reduce((x, [, v]) => x + v, 0);
+  $('bytotal').textContent = signed(yt); $('bytotal').className = cls(yt);
+  $('bcal').innerHTML = MONTHS.map((m, i) => {
+    const k = bYear + '-' + String(i + 1).padStart(2, '0'), p = f.months[k], r = rup[k], n = tr.filter(t => t.sell.startsWith(k)).length;
+    if (p == null) return `<div class="day"><span class="n">${m.slice(0, 3)}</span></div>`;
+    const tip = `${m} ${bYear}: ${signed(r)} (${pct(p)}), ${n} stock${n === 1 ? '' : 's'} sold`;
+    return `<button class="day t ${r > 0 ? 'pos' : r < 0 ? 'neg' : ''}${bSel === k ? ' sel' : ''}" data-m="${k}" title="${tip}" aria-label="${tip}"><span class="n">${m.slice(0, 3)}</span><span class="a fig">${signed(r)}</span><span class="c">${pct(p)}${n ? ', ' + n + ' sold' : ''}</span></button>`;
+  }).join('');
+  $('bprev').disabled = bYear <= years[0]; $('bnext').disabled = bYear >= years[years.length - 1];
+  const scope = bSel || bYear, rows = tr.filter(t => t.sell.startsWith(scope)).reverse();
+  $('bttl').textContent = 'Stocks sold in ' + (bSel ? MONTHS[Number(bSel.slice(5)) - 1] + ' ' + bSel.slice(0, 4) : bYear);
+  $('bclear').hidden = !bSel;
+  $('btable').innerHTML = rows.length ? `<table class="lt"><thead><tr><th>Stock</th><th>Bought</th><th>Sold</th><th>Held</th><th>Result</th><th>Why it was sold</th></tr></thead><tbody>` +
+    rows.map(t => `<tr><td><b>${t.sym}</b></td><td>${day(t.buy)}</td><td>${day(t.sell)}</td><td>${t.weeks} wk</td><td class="${cls(t.pnl)}"><b>${signed(t.pnl)}</b> (${pct(t.pct)})</td><td>${t.why}</td></tr>`).join('') + '</tbody></table>'
+    : `<div class="empty">Nothing was sold in this ${bSel ? 'month' : 'year'}. The month's result comes from price changes in the stocks still held.</div>`;
+}
+$('p-backtest').onclick = e => {
+  if (!B || !B.featured) return;
+  const years = [...new Set(Object.keys(B.featured.months).map(k => k.slice(0, 4)))], t = e.target;
+  const m = t.closest('[data-m]'), ym = t.closest('[data-ym]');
+  if (m) bSel = bSel === m.dataset.m ? null : m.dataset.m;
+  else if (ym) { bYear = ym.dataset.ym.slice(0, 4); bSel = ym.dataset.ym; $('byear').scrollIntoView({block: 'center', behavior: 'smooth'}); }
+  else if (t.closest('#bprev')) { bYear = years[years.indexOf(bYear) - 1] || bYear; bSel = null; }
+  else if (t.closest('#bnext')) { bYear = years[years.indexOf(bYear) + 1] || bYear; bSel = null; }
+  else if (t.closest('#bclear')) bSel = null;
+  else return;
+  renderMonths();
+};
 
 /* ---------- intraday lab tab ---------- */
 let mode = 'paper', ym = null, selDay = null;

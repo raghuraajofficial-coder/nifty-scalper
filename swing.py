@@ -109,7 +109,9 @@ def simulate(close, open_, nifty, c: Cfg, start: int):
                 charges += fee
                 n_trades += 1
                 wins += gain > 0
-                closed.append((gain / pos[s]["cost"] * 100, i - pos[s]["day"]))
+                closed.append(dict(sym=s, buy=str(dates[pos[s]["day"]])[:10], sell=str(d)[:10], pnl=round(gain),
+                                   pct=round(gain / pos[s]["cost"] * 100, 1), weeks=round((i - pos[s]["day"]) / 5, 1),
+                                   why="Trailing stop" if s in stops else "Fell out of the top 20"))
                 del pos[s]
             buys = [s for s in target if s not in pos and s not in stops and np.isfinite(open_.at[d, s])]
             equity = cash + sum(p["qty"] * last.at[d, s] for s, p in pos.items())
@@ -146,14 +148,14 @@ def simulate(close, open_, nifty, c: Cfg, start: int):
         curve.append((cash + sum(p["qty"] * last.at[d, s] for s, p in pos.items()), tax_paid))
     eq = pd.Series([x[0] for x in curve], index=dates[start:])
     pre = eq + pd.Series([x[1] for x in curve], index=dates[start:])
-    g, held = np.array([x[0] for x in closed] or [0.0]), np.array([x[1] for x in closed] or [0])
+    g, held = np.array([x["pct"] for x in closed] or [0.0]), np.array([x["weeks"] * 5 for x in closed] or [0])
     return eq, pre, dict(trades=n_trades, win_pct=round(wins / n_trades * 100, 1) if n_trades else 0,
                          charges=round(charges), tax=round(tax_paid),
                          trade_avg_pct=round(float(g.mean()), 1), trade_median_pct=round(float(np.median(g)), 1),
                          avg_win_pct=round(float(g[g > 0].mean()), 1) if (g > 0).any() else 0.0,
                          avg_loss_pct=round(float(g[g <= 0].mean()), 1) if (g <= 0).any() else 0.0,
                          best_trade_pct=round(float(g.max()), 1), worst_trade_pct=round(float(g.min()), 1),
-                         avg_hold_weeks=round(float(held.mean()) / 5, 1), median_hold_weeks=round(float(np.median(held)) / 5, 1))
+                         avg_hold_weeks=round(float(held.mean()) / 5, 1), median_hold_weeks=round(float(np.median(held)) / 5, 1)), closed
 
 
 def perf(eq: pd.Series) -> dict:
@@ -193,10 +195,10 @@ def main(source: str):
     start = Cfg().look + 2
     rows, feat = [], None
     for name, over in VARIANTS:
-        eq, pre, extra = simulate(close, open_, nifty, replace(Cfg(), **over), start)
+        eq, pre, extra, log = simulate(close, open_, nifty, replace(Cfg(), **over), start)
         rows.append(dict(name=name, after_tax=perf(eq), before_tax_cagr=perf(pre)["cagr"], **extra))
         if name.startswith(FEATURED):
-            feat = eq
+            feat, feat_log = eq, log
     span = close.index[start:]
     bench = {"Nifty 50 index, buy and hold (dividends excluded)": nifty.loc[span] / nifty.loc[span[0]] * 100_000,
              "Equal weight of the same 200 stocks, no selection": (1 + close.pct_change(fill_method=None).loc[span].mean(axis=1).fillna(0)).cumprod() * 100_000}
@@ -209,7 +211,9 @@ def main(source: str):
         mo = feat.groupby(key).last().pct_change()
         out["featured"] = dict(name=next(r["name"] for r in rows if r["name"].startswith(FEATURED)),
                                curve=[[f"{y}-{m:02d}", round(float(r.s)), round(float(r.n)), round(float(r.e))] for (y, m), r in me.iterrows()],
-                               months={f"{y}-{m:02d}": round(float(v) * 100, 1) for (y, m), v in mo.dropna().items()})
+                               months={f"{y}-{m:02d}": round(float(v) * 100, 1) for (y, m), v in mo.dropna().items()},
+                               rupees={f"{y}-{m:02d}": round(float(v)) for (y, m), v in feat.groupby(key).last().diff().dropna().items()},
+                               trades=feat_log)
     DOCS.mkdir(exist_ok=True)
     (DOCS / "swing_backtest.json").write_text(json.dumps(out, indent=1))
     print(f"\nSWING BACKTEST  source={source}  stocks={close.shape[1]}  {out['first_day']} to {out['last_day']}")
