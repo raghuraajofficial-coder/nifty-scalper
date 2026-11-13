@@ -8,7 +8,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: scan
+  group: swing
   cancel-in-progress: false
 jobs:
   swing:

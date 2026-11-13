@@ -58,7 +58,7 @@ def delivery_cost(value: float, side: str) -> float:
     return cost + (value * 0.00015 if side == "B" else 20 * 1.18)   # stamp duty on buys, DP charge on sells
 
 
-def load(source: str):
+def load(source: str, period: str = "12y"):
     syms = orb.NIFTY200
     if source == "demo":
         rng = np.random.default_rng(5)
@@ -69,7 +69,7 @@ def load(source: str):
     import yfinance as yf
     closes, opens = {}, {}
     for i in range(0, len(syms), 50):
-        raw = yf.download([f"{s}.NS" for s in syms[i:i + 50]], period="12y", interval="1d", auto_adjust=True,
+        raw = yf.download([f"{s}.NS" for s in syms[i:i + 50]], period=period, interval="1d", auto_adjust=True,
                           group_by="ticker", progress=False, threads=True)
         for s in syms[i:i + 50]:
             try:
@@ -79,7 +79,7 @@ def load(source: str):
             if len(df) > 300:
                 closes[s], opens[s] = df["Close"], df["Open"]
         time.sleep(1.5)
-    nifty = yf.download("^NSEI", period="12y", interval="1d", auto_adjust=True, progress=False)["Close"].squeeze()
+    nifty = yf.download("^NSEI", period=period, interval="1d", auto_adjust=True, progress=False)["Close"].squeeze()
     close, open_ = pd.DataFrame(closes), pd.DataFrame(opens)
     for x in (close, open_, nifty):
         x.index = pd.DatetimeIndex(x.index).tz_localize(None)
@@ -173,6 +173,7 @@ def perf(eq: pd.Series) -> dict:
                 down_years=int((yr < 0).sum()), monthly=monthly, years={int(k): round(float(v) * 100, 1) for k, v in yr.items()})
 
 
+FEATURED = "J."                               # the version the paper portfolio follows
 VARIANTS = [
     ("A. Base: 12-month momentum, top 5, review every 4 weeks, market filter", {}),
     ("B. Base without the market filter", dict(market_filter=False)),
@@ -190,16 +191,25 @@ VARIANTS = [
 def main(source: str):
     close, open_, nifty = load(source)
     start = Cfg().look + 2
-    rows = []
+    rows, feat = [], None
     for name, over in VARIANTS:
         eq, pre, extra = simulate(close, open_, nifty, replace(Cfg(), **over), start)
         rows.append(dict(name=name, after_tax=perf(eq), before_tax_cagr=perf(pre)["cagr"], **extra))
+        if name.startswith(FEATURED):
+            feat = eq
     span = close.index[start:]
     bench = {"Nifty 50 index, buy and hold (dividends excluded)": nifty.loc[span] / nifty.loc[span[0]] * 100_000,
              "Equal weight of the same 200 stocks, no selection": (1 + close.pct_change(fill_method=None).loc[span].mean(axis=1).fillna(0)).cumprod() * 100_000}
     out = dict(generated=datetime.now(ns.IST).strftime("%Y-%m-%d %H:%M"), source=source, stocks=close.shape[1],
                first_day=str(span[0])[:10], last_day=str(span[-1])[:10], capital=100_000, rows=rows,
                benchmarks=[dict(name=k, **perf(v)) for k, v in bench.items()])
+    if feat is not None:                                   # month-end series for the dashboard's chart and heatmap
+        key = [feat.index.year, feat.index.month]
+        me = pd.DataFrame({"s": feat, **{k: v for k, v in zip("ne", bench.values())}}).groupby(key).last()
+        mo = feat.groupby(key).last().pct_change()
+        out["featured"] = dict(name=next(r["name"] for r in rows if r["name"].startswith(FEATURED)),
+                               curve=[[f"{y}-{m:02d}", round(float(r.s)), round(float(r.n)), round(float(r.e))] for (y, m), r in me.iterrows()],
+                               months={f"{y}-{m:02d}": round(float(v) * 100, 1) for (y, m), v in mo.dropna().items()})
     DOCS.mkdir(exist_ok=True)
     (DOCS / "swing_backtest.json").write_text(json.dumps(out, indent=1))
     print(f"\nSWING BACKTEST  source={source}  stocks={close.shape[1]}  {out['first_day']} to {out['last_day']}")
