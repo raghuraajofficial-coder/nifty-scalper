@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nifty 50 Scalper</title>
+<title>NSE Breakout Paper Trader</title>
 <style>
   :root {
     --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --muted: #898781;
@@ -70,6 +70,11 @@
   .tag { font-size: 11.5px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--ring); color: var(--ink2); }
   .chip { all: unset; cursor: pointer; font-size: 12px; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--ring); color: var(--ink2); }
   .empty { color: var(--ink2); padding: 28px 8px; text-align: center; }
+  .rules { margin-bottom: 16px; font-size: 13px; }
+  .rules summary { cursor: pointer; font-weight: 600; }
+  .rules summary span { font-weight: 400; color: var(--ink2); margin-left: 8px; }
+  .rules ol { margin: 10px 0 2px; padding-left: 20px; color: var(--ink2); line-height: 1.6; }
+  .rules b { color: var(--ink); }
   footer { margin-top: 18px; color: var(--muted); font-size: 12px; }
   @media (max-width: 900px) { .kpis { grid-template-columns: repeat(3, 1fr); } .grid { grid-template-columns: 1fr; } }
   @media (max-width: 520px) { .kpis { grid-template-columns: repeat(2, 1fr); } .status { margin-left: 0; width: 100%; } }
@@ -78,11 +83,22 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>Nifty 50 Scalper</h1>
+    <h1>NSE Breakout Paper Trader</h1>
     <span class="badge">Paper trading · no real orders</span>
     <div class="status"><span class="dot" id="dot"></span><span id="status">Loading…</span></div>
   </header>
   <div id="banner" class="banner" hidden></div>
+  <details class="card rules">
+    <summary>How this trades <span id="picks"></span></summary>
+    <ol>
+      <li><b>Which stocks:</b> at 9:20 it ranks the Nifty 200 by how unusual the first 5 minutes of volume were, compared with each stock's last 14 sessions, and follows the top 3.</li>
+      <li><b>Buy or short:</b> the first candle (9:15 to 9:20) decides. Green candle: buy only. Red candle: short only.</li>
+      <li><b>Entry:</b> buy when price trades above that first candle's high; short when it trades below its low. No entry after 14:30.</li>
+      <li><b>Stop loss:</b> one fixed stop per trade, placed 25% of the stock's average daily range away from the entry price. It does not move.</li>
+      <li><b>Profit:</b> no target. A winning trade is held until 15:05 and closed before the broker's 15:10 square-off.</li>
+      <li><b>Size:</b> each trade risks 0.5% of capital (about ₹500) if stopped, with total positions capped at 4 times capital.</li>
+    </ol>
+  </details>
   <div class="seg" role="group" aria-label="Data set">
     <button id="m-paper" aria-pressed="true">Live paper trades</button>
     <button id="m-backtest" aria-pressed="false">Backtest</button>
@@ -138,7 +154,8 @@ function renderStatus() {
   if (s.source === 'demo') msgs.push('Demo data: these are random prices, not real market results.');
   if (s.error) msgs.push('Scanner problem: ' + s.error);
   $('banner').hidden = !msgs.length; $('banner').textContent = msgs.join(' ');
-  $('m-backtest').textContent = 'Backtest' + (s.backfill_days ? ' (last ' + s.backfill_days + ' days)' : '');
+  $('picks').textContent = s.picks && s.picks.length ? '· today: ' + s.picks.join(', ') : '';
+  $('m-backtest').textContent = 'Backtest' + (s.backfill_days ? ' (' + s.backfill_days + ' sessions)' : '');
   $('foot').textContent = 'Times in IST. P&L is net of brokerage, STT, exchange fees, stamp duty and GST. Refreshes every minute.';
 }
 
@@ -188,7 +205,7 @@ function renderTable() {
   $('clear').hidden = !selDay;
   if (!rows.length) {
     $('table').innerHTML = `<div class="empty">${mode === 'paper'
-      ? 'No paper trades yet. The scanner runs from 9:20 to 15:30 IST on trading days and takes at most 3 trades a day.'
+      ? 'No paper trades yet. Stocks are picked at about 9:27 IST on trading days and at most 3 are traded a day.'
       : 'No backtest trades to show.'}</div>`;
     return;
   }
