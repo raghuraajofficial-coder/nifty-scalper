@@ -8,7 +8,8 @@ Idea (Zarattini, Barbon & Aziz 2024, adapted to NSE cash-segment intraday):
   2. Take the top few. Trade each only in the direction of its first candle:
      green candle -> buy if price later breaks above that candle's high,
      red candle   -> short if price later breaks below that candle's low.
-  3. Stop = 10% of the stock's 14-day average daily range away from entry.
+  3. Stop = 25% of the stock's 14-day average daily range away from entry. (The US study used 10%;
+     on NSE 5-minute data that is narrower than a single candle, so it cannot be managed or tested.)
   4. No profit target. Exit at the stop or at 15:05, before the broker's auto square-off.
   5. Size every trade so a stop-out costs the same fixed % of capital; intraday margin
      is used only to reach that size, capped at `leverage` times capital in total.
@@ -59,7 +60,7 @@ class OrbConfig:
     leverage: float = 4.0          # cap on total position value / capital (Groww intraday allows up to 5x)
     top_n: int = 3                 # how many stocks in play to trade each day
     min_relvol: float = 1.0        # first-candle volume must be at least this multiple of normal
-    stop_atr: float = 0.10         # stop distance as a fraction of the 14-day average daily range
+    stop_atr: float = 0.25         # stop distance as a fraction of the 14-day average daily range
     lookback: int = 14
     min_price: float = 100.0
     entry_until: str = "14:30"
@@ -222,7 +223,7 @@ VARIANTS = [
     ("A. Base: Nifty 200, top 3 in play, margin up to 4x", {}, "n200"),
     ("B. Same, no margin (1x)", dict(leverage=1.0), "n200"),
     ("C. Top 5 in play", dict(top_n=5), "n200"),
-    ("D. Wider stop (25% of daily range)", dict(stop_atr=0.25), "n200"),
+    ("D. Tight stop as in the US study (10% of daily range)", dict(stop_atr=0.10), "n200"),
     ("E. Nifty 50 stocks only", {}, "n50"),
     ("F. Control: every breakout, no in-play filter", dict(top_n=999, min_relvol=0.0, fixed_notional=100_000.0), "n200"),
 ]
