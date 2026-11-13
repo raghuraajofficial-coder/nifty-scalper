@@ -1,0 +1,144 @@
+{
+ "view": {
+  "updated": "2026-11-13 18:25",
+  "as_of": "2026-11-13",
+  "started": "2026-11-13",
+  "capital": 100000.0,
+  "equity": 100000,
+  "cash": 100000,
+  "pnl": 0,
+  "pnl_pct": 0.0,
+  "charges": 0,
+  "tax_paid": 0,
+  "tax_due": 0,
+  "realised": 0,
+  "next_review": 20,
+  "trail_pct": 15.0,
+  "market": {
+   "nifty": 25144,
+   "ma200": 23992,
+   "above": true
+  },
+  "holdings": [],
+  "buys": [
+   {
+    "sym": "APARINDS",
+    "last": 14667.0,
+    "rank": 1,
+    "mom": 116.7
+   },
+   {
+    "sym": "LAURUSLABS",
+    "last": 2424.0,
+    "rank": 2,
+    "mom": 109.7
+   },
+   {
+    "sym": "MCX",
+    "last": 3720.0,
+    "rank": 3,
+    "mom": 77.8
+   },
+   {
+    "sym": "BHEL",
+    "last": 436.3,
+    "rank": 4,
+    "mom": 66.1
+   },
+   {
+    "sym": "MOTHERSON",
+    "last": 164.8,
+    "rank": 5,
+    "mom": 53.9
+   }
+  ],
+  "sells": [],
+  "leaders": [
+   {
+    "sym": "APARINDS",
+    "mom": 116.7,
+    "held": false
+   },
+   {
+    "sym": "LAURUSLABS",
+    "mom": 109.7,
+    "held": false
+   },
+   {
+    "sym": "MCX",
+    "mom": 77.8,
+    "held": false
+   },
+   {
+    "sym": "BHEL",
+    "mom": 66.1,
+    "held": false
+   },
+   {
+    "sym": "MOTHERSON",
+    "mom": 53.9,
+    "held": false
+   },
+   {
+    "sym": "POWERINDIA",
+    "mom": 47.9,
+    "held": false
+   },
+   {
+    "sym": "MAHABANK",
+    "mom": 47.7,
+    "held": false
+   },
+   {
+    "sym": "SOLARINDS",
+    "mom": 47.5,
+    "held": false
+   },
+   {
+    "sym": "AUROPHARMA",
+    "mom": 46.6,
+    "held": false
+   },
+   {
+    "sym": "NATIONALUM",
+    "mom": 42.5,
+    "held": false
+   }
+  ],
+  "closed": [],
+  "history": [
+   {
+    "d": "2026-11-13",
+    "eq": 100000.0,
+    "n": 25144.3
+   }
+  ]
+ },
+ "state": {
+  "started": "2026-11-13",
+  "last_day": "2026-11-13",
+  "cash": 100000.0,
+  "pos": {},
+  "pending": [
+   "APARINDS",
+   "LAURUSLABS",
+   "MCX",
+   "BHEL",
+   "MOTHERSON"
+  ],
+  "stops": [],
+  "since_review": 0,
+  "history": [
+   {
+    "d": "2026-11-13",
+    "eq": 100000.0,
+    "n": 25144.3
+   }
+  ],
+  "closed": [],
+  "charges": 0.0,
+  "fy_gain": 0.0,
+  "carry": 0.0,
+  "tax_paid": 0.0
+ }
+}
