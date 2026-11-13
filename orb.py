@@ -3,11 +3,12 @@
 Opening-range breakout on NSE "stocks in play"  (paper trading and backtest; places NO orders)
 
 Idea (Zarattini, Barbon & Aziz 2024, adapted to NSE cash-segment intraday):
-  1. At 09:20, rank Nifty 200 stocks by how unusual their first 5-minute volume is
-     (today's 09:15 candle volume / its average over the previous 14 sessions).
-  2. Take the top few. Trade each only in the direction of its first candle:
-     green candle -> buy if price later breaks above that candle's high,
-     red candle   -> short if price later breaks below that candle's low.
+  1. At 09:25, rank Nifty 200 stocks by how unusual their early volume is
+     (today's 09:20 candle volume / its average over the previous 14 sessions; the free
+     Yahoo feed carries no volume for the 09:15 candle, so the second candle is used).
+  2. Take the top few. Trade each only in the direction of its first 10 minutes (09:15-09:25):
+     price up over those 10 minutes   -> buy if it later breaks above their high,
+     price down over those 10 minutes -> short if it later breaks below their low.
   3. Stop = 25% of the stock's 14-day average daily range away from entry. (The US study used 10%;
      on NSE 5-minute data that is narrower than a single candle, so it cannot be managed or tested.)
   4. No profit target. Exit at the stop or at 15:05, before the broker's auto square-off.
@@ -78,6 +79,10 @@ def _mins(s: str) -> int:
     return int(h) * 60 + int(m)
 
 
+def after_range(bars: pd.DataFrame) -> pd.DataFrame:
+    return bars[bars.index.hour * 60 + bars.index.minute >= 565]       # candles from 09:25 on
+
+
 def load_many(symbols, days, source):
     if source == "demo":
         return ns.load_demo(symbols, days, 5)
@@ -98,10 +103,15 @@ def day_table(df: pd.DataFrame, oc: OrbConfig) -> pd.DataFrame:
     pc = d["close"].shift()
     tr = pd.concat([d["high"] - d["low"], (d["high"] - pc).abs(), (d["low"] - pc).abs()], axis=1).max(axis=1)
     d["atr"] = tr.rolling(oc.lookback).mean().shift()
-    first = df[(df.index.hour == 9) & (df.index.minute == 15)]
-    first = first.set_index(first.index.normalize())[["open", "high", "low", "close", "volume"]].add_prefix("or_")
-    d = d.join(first)
-    d["relvol"] = d["or_volume"] / d["or_volume"].rolling(oc.lookback).mean().shift()
+    m = df.index.hour * 60 + df.index.minute
+    rng = df[(m >= 555) & (m < 565)]                                    # 09:15 and 09:20 candles = 10-minute opening range
+    k = rng.groupby(rng.index.normalize())
+    first = pd.DataFrame({"or_open": k["open"].first(), "or_high": k["high"].max(), "or_low": k["low"].min(),
+                          "or_close": k["close"].last(), "or_n": k["close"].size()})
+    vol = df[m == 560]
+    first["or_volume"] = vol.set_index(vol.index.normalize())["volume"].replace(0, np.nan)
+    d = d.join(first[first["or_n"] == 2].drop(columns="or_n"))
+    d["relvol"] = d["or_volume"] / d["or_volume"].rolling(oc.lookback, min_periods=8).mean().shift()
     return d
 
 
@@ -181,7 +191,7 @@ def backtest(data: dict, oc: OrbConfig, universe=None):
     for day in days:
         day_net = 0.0
         for p in picks_for_day(tables, day, oc):
-            t = simulate(p, by_day[p["sym"]][day].iloc[1:], oc)
+            t = simulate(p, after_range(by_day[p["sym"]][day]), oc)
             if t is None or t["exit"] is None:
                 continue
             t = size_and_settle(t, equity, oc)
@@ -270,7 +280,7 @@ def live_scan(state: dict, now: datetime, source: str, capital: float) -> str:
     today, mins = now.strftime("%Y-%m-%d"), now.hour * 60 + now.minute
     od = state.get("orb_day") or {}
     if od.get("date") != today:
-        if mins < 9 * 60 + 27:
+        if mins < 9 * 60 + 32:
             return ""
         data = load_many(NIFTY200, 32, source)
         if not data:
@@ -278,7 +288,7 @@ def live_scan(state: dict, now: datetime, source: str, capital: float) -> str:
         day = pd.Timestamp(today)
         tables = {s: day_table(df, oc) for s, df in data.items()}
         if not any(day in t.index and not np.isnan(t.loc[day, "or_volume"]) for t in tables.values()):
-            return "Today's first candle is not available yet (holiday or delayed data)"
+            return "Today's opening candles are not available yet (holiday or delayed data)"
         od = dict(date=today, stocks=len(data), picks=picks_for_day(tables, day, oc))
         state["orb_day"] = od
     earlier = [t for t in state["trades"]["paper"] if t["sig_time"][:10] < today]
@@ -291,7 +301,7 @@ def live_scan(state: dict, now: datetime, source: str, capital: float) -> str:
             df = data.get(p["sym"])
             if df is None:
                 continue
-            bars = df[(df.index.normalize() == pd.Timestamp(today)) & (df.index <= cutoff)].iloc[1:]
+            bars = after_range(df[(df.index.normalize() == pd.Timestamp(today)) & (df.index <= cutoff)])
             t = simulate(p, bars, oc)
             t = size_and_settle(t, equity, oc) if t else None
             if t:
