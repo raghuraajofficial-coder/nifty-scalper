@@ -1,0 +1,30 @@
+name: Swing backtest
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - swing.py
+      - .github/workflows/swing.yml
+permissions:
+  contents: write
+concurrency:
+  group: scan
+  cancel-in-progress: false
+jobs:
+  swing:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python swing.py
+      - name: Save results
+        run: |
+          git config user.name "scan-bot"
+          git config user.email "scan-bot@users.noreply.github.com"
+          git add docs/swing_backtest.json
+          git diff --cached --quiet || (git commit -m "Swing backtest" && git pull --rebase && git push)
