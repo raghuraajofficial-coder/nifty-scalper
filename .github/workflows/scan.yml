@@ -1,0 +1,37 @@
+name: Market scan
+on:
+  schedule:
+    - cron: "*/5 3-10 * * 1-5"   # every 5 min, 08:30-16:25 IST on weekdays; the script ignores off-hours
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: scan
+  cancel-in-progress: false
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python run_scan.py ${{ github.event_name == 'workflow_dispatch' && '--force' || '' }}
+        env:
+          SOURCE: yfinance
+          CAPITAL: "100000"
+      - name: Save results
+        run: |
+          git config user.name "scan-bot"
+          git config user.email "scan-bot@users.noreply.github.com"
+          git add docs/data.json
+          # commit when trades changed, or at most every 30 minutes, to stay under the Pages build limit
+          if git diff --cached --quiet; then exit 0; fi
+          CHANGED=$(git diff --cached -U0 docs/data.json | grep -E '^[+-] ' | grep -vcE '"(now|last_scan|market_open|stocks)"' || true)
+          LAST=$(git log -1 --format=%ct -- docs/data.json 2>/dev/null || echo 0)
+          if [ "$CHANGED" -gt 0 ] || [ $(( $(date +%s) - ${LAST:-0} )) -gt 1500 ]; then
+            git commit -m "scan $(TZ=Asia/Kolkata date '+%Y-%m-%d %H:%M')" && git push
+          fi
