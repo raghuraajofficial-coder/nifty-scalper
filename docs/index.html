@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nifty 50 Scalper</title>
+<style>
+  :root {
+    --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --muted: #898781;
+    --line: #e1e0d9; --ring: rgba(11,11,11,.10); --neutral: #f0efec;
+    --up: #006300; --down: #b83232; --up-bg: rgba(12,163,12,.16); --down-bg: rgba(208,59,59,.15);
+    --accent: #2a78d6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
+      --line: #2c2c2a; --ring: rgba(255,255,255,.10); --neutral: #262624;
+      --up: #0ca30c; --down: #e66767; --up-bg: rgba(12,163,12,.22); --down-bg: rgba(208,59,59,.24);
+      --accent: #3987e5;
+    }
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--page); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 48px; }
+  header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-bottom: 18px; }
+  h1 { font-size: 20px; margin: 0; letter-spacing: -.01em; }
+  .badge { font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--ring); color: var(--ink2); }
+  .status { margin-left: auto; color: var(--ink2); font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .dot.on { background: #0ca30c; }
+  .banner { background: var(--down-bg); border-radius: 8px; padding: 9px 12px; margin-bottom: 14px; font-size: 13px; }
+  .seg { display: inline-flex; border: 1px solid var(--ring); border-radius: 8px; overflow: hidden; margin-bottom: 16px; background: var(--surface); }
+  .seg button { all: unset; cursor: pointer; padding: 7px 14px; font-size: 13px; color: var(--ink2); }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--page); font-weight: 600; }
+  .seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .kpis { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 16px; }
+  .kpi, .card { background: var(--surface); border: 1px solid var(--ring); border-radius: 10px; }
+  .kpi { padding: 12px 14px; }
+  .kpi .l { font-size: 12px; color: var(--ink2); }
+  .kpi .v { font-size: 20px; font-weight: 650; margin-top: 2px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .kpi .s { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .up { color: var(--up); } .down { color: var(--down); }
+  .grid { display: grid; grid-template-columns: 370px 1fr; gap: 16px; align-items: start; }
+  .card { padding: 14px 16px; min-width: 0; }
+  .card h2 { font-size: 14px; margin: 0; }
+  .head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .head .sp { flex: 1; }
+  .nav { all: unset; cursor: pointer; width: 26px; height: 26px; border-radius: 6px; text-align: center; border: 1px solid var(--ring); color: var(--ink2); }
+  .nav:disabled { opacity: .35; cursor: default; }
+  .nav:focus-visible, .day:focus-visible { outline: 2px solid var(--accent); }
+  .cal { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .dow { font-size: 11px; color: var(--muted); text-align: center; padding-bottom: 2px; }
+  .day { all: unset; box-sizing: border-box; border-radius: 6px; min-height: 58px; padding: 5px 6px; background: var(--neutral); display: flex; flex-direction: column; }
+  .day.t { cursor: pointer; }
+  .day.pos { background: var(--up-bg); } .day.neg { background: var(--down-bg); }
+  .day.sel { box-shadow: inset 0 0 0 2px var(--ink); }
+  .day.blank { background: none; }
+  .day .n { font-size: 11px; color: var(--ink2); }
+  .day .a { font-size: 12px; font-weight: 650; margin-top: auto; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .day .c { font-size: 10.5px; color: var(--ink2); }
+  .legend { display: flex; gap: 14px; margin-top: 10px; font-size: 12px; color: var(--ink2); }
+  .sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+  .tw { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th { font-size: 11.5px; font-weight: 600; color: var(--ink2); text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 7px 7px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th:nth-child(-n+3), td:nth-child(-n+3) { text-align: left; }
+  tr:last-child td { border-bottom: 0; }
+  .tag { font-size: 11.5px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--ring); color: var(--ink2); }
+  .chip { all: unset; cursor: pointer; font-size: 12px; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--ring); color: var(--ink2); }
+  .empty { color: var(--ink2); padding: 28px 8px; text-align: center; }
+  footer { margin-top: 18px; color: var(--muted); font-size: 12px; }
+  @media (max-width: 900px) { .kpis { grid-template-columns: repeat(3, 1fr); } .grid { grid-template-columns: 1fr; } }
+  @media (max-width: 520px) { .kpis { grid-template-columns: repeat(2, 1fr); } .status { margin-left: 0; width: 100%; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Nifty 50 Scalper</h1>
+    <span class="badge">Paper trading · no real orders</span>
+    <div class="status"><span class="dot" id="dot"></span><span id="status">Loading…</span></div>
+  </header>
+  <div id="banner" class="banner" hidden></div>
+  <div class="seg" role="group" aria-label="Data set">
+    <button id="m-paper" aria-pressed="true">Live paper trades</button>
+    <button id="m-backtest" aria-pressed="false">Backtest</button>
+  </div>
+  <section class="kpis" id="kpis"></section>
+  <div class="grid">
+    <section class="card">
+      <div class="head">
+        <h2 id="month"></h2><span id="mtotal" style="font-weight:650"></span><span class="sp"></span>
+        <button class="nav" id="prev" aria-label="Previous month">‹</button>
+        <button class="nav" id="next" aria-label="Next month">›</button>
+      </div>
+      <div class="cal" id="cal"></div>
+      <div class="legend">
+        <span><span class="sw" style="background:var(--up-bg)"></span>+ Profit day</span>
+        <span><span class="sw" style="background:var(--down-bg)"></span>− Loss day</span>
+        <span><span class="sw" style="background:var(--neutral)"></span>No trades</span>
+      </div>
+    </section>
+    <section class="card">
+      <div class="head"><h2 id="ttitle">Trades</h2><span class="sp"></span><button class="chip" id="clear" hidden>Show all days ✕</button></div>
+      <div class="tw" id="table"></div>
+    </section>
+  </div>
+  <footer id="foot"></footer>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const inr = n => '₹' + Math.abs(Math.round(n)).toLocaleString('en-IN');
+const signed = n => (n > 0 ? '+' : n < 0 ? '−' : '') + inr(n);
+const cls = n => n > 0 ? 'up' : n < 0 ? 'down' : '';
+const px = n => n == null ? '–' : Number(n).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+let D = null, mode = 'paper', ym = null, selDay = null;
+
+function trades() { return D.trades[mode] || []; }
+function closed() { return trades().filter(t => t.net != null); }
+function byDay() {
+  const m = {};
+  for (const t of closed()) { const d = t.sig_time.slice(0, 10); (m[d] ||= {net: 0, n: 0, w: 0}); m[d].net += t.net; m[d].n++; if (t.net > 0) m[d].w++; }
+  return m;
+}
+
+function renderStatus() {
+  const s = D.status;
+  $('dot').className = 'dot' + (s.market_open ? ' on' : '');
+  const parts = [s.market_open ? 'Market open' : 'Market closed'];
+  if (s.last_scan) parts.push('updated ' + s.last_scan.slice(11) + (s.last_scan.slice(0, 10) !== s.now.slice(0, 10) ? ' on ' + s.last_scan.slice(0, 10) : ''));
+  if (s.stocks) parts.push(s.stocks + ' stocks');
+  parts.push('data: ' + s.source);
+  $('status').textContent = parts.join(' · ');
+  const msgs = [];
+  if (s.source === 'demo') msgs.push('Demo data: these are random prices, not real market results.');
+  if (s.error) msgs.push('Scanner problem: ' + s.error);
+  $('banner').hidden = !msgs.length; $('banner').textContent = msgs.join(' ');
+  $('m-backtest').textContent = 'Backtest' + (s.backfill_days ? ' (last ' + s.backfill_days + ' days)' : '');
+  $('foot').textContent = 'Times in IST. P&L is net of brokerage, STT, exchange fees, stamp duty and GST. Refreshes every minute.';
+}
+
+function renderKpis() {
+  const c = closed(), today = D.status.now.slice(0, 10), mon = today.slice(0, 7);
+  const sum = a => a.reduce((x, t) => x + t.net, 0);
+  const net = sum(c), tNet = sum(c.filter(t => t.sig_time.startsWith(today))), mNet = sum(c.filter(t => t.sig_time.startsWith(mon)));
+  const wins = c.filter(t => t.net > 0).length, cost = c.reduce((x, t) => x + t.cost, 0), cap = D.status.capital;
+  const pct = n => (n >= 0 ? '+' : '−') + Math.abs(n / cap * 100).toFixed(2) + '%';
+  const k = (l, v, s, kl = '') => `<div class="kpi"><div class="l">${l}</div><div class="v ${kl}">${v}</div><div class="s">${s}</div></div>`;
+  $('kpis').innerHTML =
+    k('Net P&L', signed(net), pct(net) + ' on ' + inr(cap), cls(net)) +
+    k('Today', signed(tNet), pct(tNet), cls(tNet)) +
+    k('This month', signed(mNet), pct(mNet), cls(mNet)) +
+    k('Win rate', c.length ? Math.round(wins / c.length * 100) + '%' : '–', wins + ' of ' + c.length + ' trades') +
+    k('Trades', c.length, trades().length - c.length ? (trades().length - c.length) + ' open now' : 'closed') +
+    k('Charges paid', inr(cost), c.length ? 'avg ' + inr(cost / c.length) + ' per trade' : '&nbsp;');
+}
+
+function renderCal() {
+  const days = byDay(), [y, m] = ym.split('-').map(Number), today = D.status.now.slice(0, 10);
+  $('month').textContent = MONTHS[m - 1] + ' ' + y;
+  const mt = Object.entries(days).filter(([d]) => d.startsWith(ym)).reduce((x, [, v]) => x + v.net, 0);
+  $('mtotal').textContent = signed(mt); $('mtotal').className = cls(mt);
+  let h = ['Mon','Tue','Wed','Thu','Fri'].map(d => `<div class="dow">${d}</div>`).join('');
+  const last = new Date(y, m, 0).getDate();
+  const firstDow = (new Date(y, m - 1, 1).getDay() + 6) % 7;            // 0 = Monday
+  for (let i = 0; i < (firstDow > 4 ? 0 : firstDow); i++) h += '<div class="day blank"></div>';
+  for (let d = 1; d <= last; d++) {
+    if ((new Date(y, m - 1, d).getDay() + 6) % 7 > 4) continue;         // market is shut on weekends
+    const key = ym + '-' + String(d).padStart(2, '0'), v = days[key];
+    if (v) {
+      const tip = `${key}: ${signed(v.net)} net, ${v.n} trade${v.n > 1 ? 's' : ''}, ${v.w} won`;
+      h += `<button class="day t ${v.net >= 0 ? 'pos' : 'neg'}${selDay === key ? ' sel' : ''}" data-d="${key}" title="${tip}" aria-label="${tip}">
+              <span class="n">${d}</span><span class="a">${signed(v.net)}</span><span class="c">${v.n} trade${v.n > 1 ? 's' : ''}</span></button>`;
+    } else h += `<div class="day" title="${key}: no trades"><span class="n">${d}</span>${key === today ? '<span class="c" style="margin-top:auto">today</span>' : ''}</div>`;
+  }
+  $('cal').innerHTML = h;
+  const months = Object.keys(days).map(d => d.slice(0, 7)).concat(today.slice(0, 7)).sort();
+  $('prev').disabled = ym <= months[0]; $('next').disabled = ym >= months[months.length - 1];
+}
+
+function renderTable() {
+  let rows = trades().slice().reverse();
+  if (selDay) rows = rows.filter(t => t.sig_time.startsWith(selDay));
+  $('ttitle').textContent = selDay ? 'Trades on ' + selDay : 'Trades';
+  $('clear').hidden = !selDay;
+  if (!rows.length) {
+    $('table').innerHTML = `<div class="empty">${mode === 'paper'
+      ? 'No paper trades yet. The scanner runs from 9:20 to 15:30 IST on trading days and takes at most 3 trades a day.'
+      : 'No backtest trades to show.'}</div>`;
+    return;
+  }
+  const more = rows.length > 200 ? rows.length - 200 : 0;
+  $('table').innerHTML = `<table><thead><tr><th>When</th><th>Stock</th><th>Side</th><th>Qty</th><th>Entry</th><th>Exit</th><th>Result</th><th>Gross</th><th>Charges</th><th>Net</th></tr></thead><tbody>` +
+    rows.slice(0, 200).map(t => `<tr><td>${Number(t.sig_time.slice(8, 10))} ${MONTHS[Number(t.sig_time.slice(5, 7)) - 1].slice(0, 3)} ${t.sig_time.slice(11, 16)}</td><td><b>${t.sym}</b></td>
+      <td>${t.side == 1 ? 'Buy' : 'Short'}</td><td>${t.qty}</td><td>${px(t.entry)}</td><td>${px(t.exit)}</td>
+      <td><span class="tag">${t.net == null ? 'open' : t.reason === 'time' ? 'time exit' : t.reason}</span></td>
+      <td>${t.net == null ? '–' : signed(t.gross)}</td><td>${t.net == null ? '–' : inr(t.cost)}</td>
+      <td class="${t.net == null ? '' : cls(t.net)}"><b>${t.net == null ? '–' : signed(t.net)}</b></td></tr>`).join('') +
+    `</tbody></table>` + (more ? `<div class="empty">${more} older trades not shown. Pick a day in the calendar to see them.</div>` : '');
+}
+
+function render() { renderStatus(); renderKpis(); renderCal(); renderTable(); }
+function setMode(m) {
+  mode = m; selDay = null;
+  $('m-paper').setAttribute('aria-pressed', m === 'paper'); $('m-backtest').setAttribute('aria-pressed', m === 'backtest');
+  const ds = Object.keys(byDay()).sort();
+  ym = (ds.length ? ds[ds.length - 1] : D.status.now).slice(0, 7);
+  render();
+}
+function shift(n) { let [y, m] = ym.split('-').map(Number); m += n; if (m < 1) { m = 12; y--; } if (m > 12) { m = 1; y++; } ym = y + '-' + String(m).padStart(2, '0'); renderCal(); }
+
+$('m-paper').onclick = () => setMode('paper');
+$('m-backtest').onclick = () => setMode('backtest');
+$('prev').onclick = () => shift(-1); $('next').onclick = () => shift(1);
+$('clear').onclick = () => { selDay = null; renderCal(); renderTable(); };
+$('cal').onclick = e => { const b = e.target.closest('[data-d]'); if (!b) return; selDay = selDay === b.dataset.d ? null : b.dataset.d; renderCal(); renderTable(); };
+
+async function refresh(first) {
+  try {
+    if (window.__DATA__) D = window.__DATA__;
+    else {
+      let r = await fetch('data.json?t=' + Date.now()).catch(() => null);      // static hosting (GitHub Pages)
+      if (!r || !r.ok) r = await fetch('api/state');                            // server.py
+      D = await r.json();
+    }
+  } catch (e) { $('status').textContent = 'No data yet. The first scan has not run.'; return; }
+  if (first) setMode(D.trades.paper.length || !D.trades.backtest.length ? 'paper' : 'backtest'); else render();
+}
+refresh(true);
+if (!window.__DATA__) setInterval(() => refresh(false), 60000);
+</script>
+</body>
+</html>
