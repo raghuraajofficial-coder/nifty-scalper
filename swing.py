@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Short-term positional ("4 to 6 week") momentum on NSE stocks: 10-year backtest. Places NO orders.
+Short-term positional ("4 to 6 week") momentum on NSE stocks: backtest from January 2020. Places NO orders.
 
 Rules (base case)
   1. Universe: today's Nifty 200.
@@ -158,6 +158,17 @@ def simulate(close, open_, nifty, c: Cfg, start: int):
                          avg_hold_weeks=round(float(held.mean()) / 5, 1), median_hold_weeks=round(float(np.median(held)) / 5, 1)), closed
 
 
+def xirr(flows) -> float:
+    """Annualised rate at which dated cash flows (date, amount; money put in is negative) net to zero."""
+    t0 = flows[0][0]
+    npv = lambda r: sum(a / (1 + r) ** ((d - t0).days / 365) for d, a in flows)
+    lo, hi = -0.99, 10.0
+    for _ in range(200):
+        mid = (lo + hi) / 2
+        lo, hi = (mid, hi) if npv(mid) > 0 else (lo, mid)
+    return (lo + hi) / 2
+
+
 def perf(eq: pd.Series) -> dict:
     years = (eq.index[-1] - eq.index[0]).days / 365.25
     yr = eq.groupby(eq.index.year).last().pct_change()
@@ -169,12 +180,14 @@ def perf(eq: pd.Series) -> dict:
                    months=len(mo), above_5=int((mo > 0.05).sum()), below_minus_5=int((mo < -0.05).sum()),
                    worst_run=int(max((len(list(g)) for k, g in __import__("itertools").groupby(mo < 0) if k), default=0)),
                    last_24={f"{y}-{m:02d}": round(float(v) * 100, 1) for (y, m), v in mo.iloc[-24:].items()})
-    return dict(cagr=round(((eq.iloc[-1] / eq.iloc[0]) ** (1 / years) - 1) * 100, 1), final=round(float(eq.iloc[-1])),
+    return dict(cagr=round(((eq.iloc[-1] / eq.iloc[0]) ** (1 / years) - 1) * 100, 1),
+                xirr=round(xirr([(eq.index[0], -100_000.0), (eq.index[-1], float(eq.iloc[-1]))]) * 100, 1), final=round(float(eq.iloc[-1])),
                 maxdd=round(float((1 - eq / eq.cummax()).max() * 100), 1), vol=round(float(daily.std() * np.sqrt(252) * 100), 1),
                 worst_year=round(float(yr.min() * 100), 1), best_year=round(float(yr.max() * 100), 1),
                 down_years=int((yr < 0).sum()), monthly=monthly, years={int(k): round(float(v) * 100, 1) for k, v in yr.items()})
 
 
+START_DATE = "2020-01-01"                     # the backtest invests its ₹1 lakh on the first trading day from here
 FEATURED = "J."                               # the version the paper portfolio follows
 VARIANTS = [
     ("A. Base: 12-month momentum, top 5, review every 4 weeks, market filter", {}),
@@ -192,7 +205,7 @@ VARIANTS = [
 
 def main(source: str):
     close, open_, nifty = load(source)
-    start = Cfg().look + 2
+    start = max(Cfg().look + 2, int(close.index.searchsorted(pd.Timestamp(START_DATE))))
     rows, feat = [], None
     for name, over in VARIANTS:
         eq, pre, extra, log = simulate(close, open_, nifty, replace(Cfg(), **over), start)
@@ -208,11 +221,13 @@ def main(source: str):
     if feat is not None:                                   # month-end series for the dashboard's chart and heatmap
         key = [feat.index.year, feat.index.month]
         me = pd.DataFrame({"s": feat, **{k: v for k, v in zip("ne", bench.values())}}).groupby(key).last()
-        mo = feat.groupby(key).last().pct_change()
+        ends = feat.groupby(key).last()
+        prev = ends.shift(1).fillna(100_000.0)             # the first month is measured from the starting ₹1 lakh
+        mo, rs = ends / prev - 1, ends - prev
         out["featured"] = dict(name=next(r["name"] for r in rows if r["name"].startswith(FEATURED)),
                                curve=[[f"{y}-{m:02d}", round(float(r.s)), round(float(r.n)), round(float(r.e))] for (y, m), r in me.iterrows()],
                                months={f"{y}-{m:02d}": round(float(v) * 100, 1) for (y, m), v in mo.dropna().items()},
-                               rupees={f"{y}-{m:02d}": round(float(v)) for (y, m), v in feat.groupby(key).last().diff().dropna().items()},
+                               rupees={f"{y}-{m:02d}": round(float(v)) for (y, m), v in rs.items()},
                                trades=feat_log)
     DOCS.mkdir(exist_ok=True)
     (DOCS / "swing_backtest.json").write_text(json.dumps(out, indent=1))
