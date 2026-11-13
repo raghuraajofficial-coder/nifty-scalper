@@ -106,7 +106,6 @@
   .heat td { border-radius: 4px; min-width: 44px; }
   .heat th:first-child { text-align: left; padding-right: 10px; }
   .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; margin: 0 0 26px; }
-  .stats.five { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; }
   .stats dt { font-size: 13px; color: var(--ink2); }
   .stats dd { margin: 0; font: 700 30px/1.15 var(--display); letter-spacing: -.02em; }
   .stats small { display: block; font: 400 12.5px system-ui, sans-serif; color: var(--muted); letter-spacing: 0; }
@@ -145,7 +144,7 @@
   @media (max-width: 900px) {
     .top, .cols, .lab { grid-template-columns: 1fr; gap: 24px; }
     .facts { grid-template-columns: repeat(2, 1fr); } .facts div + div { border-left: 0; padding-left: 0; } .facts div { border-top: 1px solid var(--rule); } .facts div:nth-child(-n+2) { border-top: 0; }
-    .stats, .stats.five { grid-template-columns: repeat(2, 1fr); } .kpis { grid-template-columns: repeat(3, 1fr); }
+    .stats { grid-template-columns: repeat(2, 1fr); } .kpis { grid-template-columns: repeat(3, 1fr); }
     .hold { grid-template-columns: 1fr auto; } .hold .railbox { grid-column: 1 / -1; order: 3; }
     .mast .stamp { margin-left: 0; width: 100%; }
   }
@@ -160,7 +159,7 @@
   </header>
   <div class="tabs" role="tablist">
     <button role="tab" id="t-portfolio" aria-selected="true" aria-controls="p-portfolio">Portfolio</button>
-    <button role="tab" id="t-backtest" aria-selected="false" aria-controls="p-backtest">Backtest</button>
+    <button role="tab" id="t-backtest" aria-selected="false" aria-controls="p-backtest">Ten-year backtest</button>
     <button role="tab" id="t-lab" aria-selected="false" aria-controls="p-lab">Intraday lab</button>
   </div>
 
@@ -319,15 +318,14 @@ function renderBacktest() {
   if (!B || !B.rows) { el.innerHTML = '<p class="empty">The backtest has not been run yet.</p>'; return; }
   const f = B.featured, row = f && B.rows.find(r => r.name === f.name), a = row && row.after_tax;
   let h = `<h2>How these rules would have done since ${B.first_day.slice(0, 4)}</h2>
-    <p class="sub">₹1 lakh following the portfolio's rules from ${day(B.first_day)} to ${day(B.last_day)}, after all charges and 20.8% tax on gains. One warning before the numbers: the test uses today's Nifty 200 members, which are the survivors of the period, so every stock-picking figure here is flattered. The fairest comparison is the same 200 stocks held equally with no picking.</p>`;
+    <p class="sub">₹1 lakh following the portfolio's rules from ${day(B.first_day)} to ${day(B.last_day)}, after all charges and 20.8% tax on gains. One warning before the numbers: the test uses today's Nifty 200 members, which are the survivors of the decade, so every stock-picking figure here is flattered. The fairest comparison is the same 200 stocks held equally with no picking.</p>`;
   if (a) {
     const mo = a.monthly;
-    h += `<dl class="stats five">
+    h += `<dl class="stats">
       <div><dt>Return per year</dt><dd class="fig">${a.cagr}%<small>₹1 lakh grew to ${lakh(a.final)}</small></dd></div>
       <div><dt>Deepest fall</dt><dd class="fig down">−${a.maxdd}%<small>from a peak to the following low</small></dd></div>
       <div><dt>Worst month</dt><dd class="fig down">${pct(mo.worst)}<small>best month ${pct(mo.best)}</small></dd></div>
-      <div><dt>Months in profit</dt><dd class="fig">${mo.up_pct.toFixed(0)}%<small>a typical month made ${pct(mo.median)}</small></dd></div>
-      <div title="XIRR is the yearly rate that turns the money put in, on the dates it went in, into the final value. With one ₹1 lakh investment at the start and nothing added or withdrawn, it matches the return per year."><dt>XIRR</dt><dd class="fig">${ok(a.xirr) ? a.xirr + '%' : '–'}<small>one ₹1 lakh investment on ${day(B.first_day)}</small></dd></div></dl>
+      <div><dt>Months in profit</dt><dd class="fig">${mo.up_pct.toFixed(0)}%<small>a typical month made ${pct(mo.median)}</small></dd></div></dl>
       <div class="block"><h2>Growth of ₹1 lakh</h2><p class="sub">Drawn on a ratio scale, so equal distances are equal percentage moves.</p><div class="chart" id="btchart"></div></div>
       <div class="block"><h2>Profit and loss by month</h2><p class="sub">Change in the portfolio's value each month, in rupees and per cent. Amounts grow over the years because the gains are reinvested. Pick a month to see the stocks sold in it.</p>
         <div class="lab"><section class="card"><div class="head"><h3 id="byear"></h3><span id="bytotal" style="font-weight:650"></span><span class="sp"></span>
