@@ -1,50 +1,19 @@
 {
  "status": {
   "backfill_date": "2026-11-13",
-  "now": "2026-11-13 16:36",
-  "last_scan": "2026-11-13 16:36",
+  "now": "2026-11-13 17:02",
+  "last_scan": "2026-11-13 17:02",
   "source": "yfinance",
   "market_open": false,
   "capital": 100000.0,
   "backfill_days": 45,
-  "stocks": 50,
-  "error": ""
+  "stocks": 200,
+  "error": "",
+  "strategy": "orb",
+  "picks": []
  },
  "trades": {
-  "paper": [
-   {
-    "sym": "ADANIENT",
-    "side": 1,
-    "qty": 36,
-    "sig_time": "2026-11-13 09:30:00",
-    "entry_time": "2026-11-13 09:30:00",
-    "entry": 2744.45,
-    "stop": 2738.06,
-    "target": 2754.04,
-    "exit_time": "2026-11-13 09:35:00",
-    "exit": 2737.51,
-    "reason": "stop",
-    "gross": -249.86,
-    "cost": 82.18,
-    "net": -332.05
-   },
-   {
-    "sym": "ETERNAL",
-    "side": -1,
-    "qty": 274,
-    "sig_time": "2026-11-13 09:35:00",
-    "entry_time": "2026-11-13 09:35:00",
-    "entry": 362.78,
-    "stop": 363.63,
-    "target": 361.5,
-    "exit_time": "2026-11-13 09:50:00",
-    "exit": 363.7,
-    "reason": "stop",
-    "gross": -252.81,
-    "cost": 82.49,
-    "net": -335.3
-   }
-  ],
+  "paper": [],
   "backtest": [
    {
     "sym": "GVT&D",
@@ -911,5 +880,10 @@
     "net": -483.14
    }
   ]
+ },
+ "orb_day": {
+  "date": "2026-11-13",
+  "stocks": 200,
+  "picks": []
  }
 }
