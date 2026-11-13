@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+trades.db
+trades.csv
+signals_log.csv
