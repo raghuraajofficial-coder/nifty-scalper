@@ -239,6 +239,8 @@ def perf(eq: pd.Series) -> dict:
                 down_years=int((yr < 0).sum()), monthly=monthly, years={int(k): round(float(v) * 100, 1) for k, v in yr.items()})
 
 
+START_DATE = "2016-01-01"                     # fixed first day, so the review dates do not drift from one run to the next
+OFFSETS = 20                                  # review schedules tried: starting 0, 1, ... 19 trading days later
 FEATURED = "J."                               # the version the paper portfolio follows
 VARIANTS = [
     ("A. Base: 12-month momentum, top 5, review every 4 weeks, market filter", {}),
@@ -267,7 +269,7 @@ SCREENS = [
 
 def main(source: str):
     close, open_, nifty, vol = load(source, volume=True)
-    start = Cfg().look + 2
+    start = max(Cfg().look + 2, int(close.index.searchsorted(pd.Timestamp(START_DATE))))
     rows, feat = [], None
     for name, over in VARIANTS:
         eq, pre, extra, log = simulate(close, open_, nifty, replace(Cfg(), **over), start)
@@ -281,17 +283,32 @@ def main(source: str):
         a, b = eq[eq.index <= half], eq[eq.index >= half]
         g = lambda x: round(((x.iloc[-1] / x.iloc[0]) ** (365.25 / max(1, (x.index[-1] - x.index[0]).days)) - 1) * 100, 1)
         return [float(g(a)), float(g(b))]
+    # The result depends on which day the four-weekly reviews happen to fall, so every version is run on
+    # OFFSETS different schedules and compared with the unscreened rule on the same schedule.
+    def quick(eq):
+        yrs = (eq.index[-1] - eq.index[0]).days / 365.25
+        return ((eq.iloc[-1] / eq.iloc[0]) ** (1 / yrs) - 1) * 100, float((1 - eq / eq.cummax()).max() * 100)
+    spread = lambda v: [round(float(np.min(v)), 1), round(float(np.median(v)), 1), round(float(np.max(v)), 1)]
+    base_runs = [quick(simulate(close, open_, nifty, feat_cfg, start + k)[0]) for k in range(OFFSETS)]
+    bc, bd = np.array([x[0] for x in base_runs]), np.array([x[1] for x in base_runs])
     tested = []
     for key, title, what in SCREENS:
-        eq, pre, extra, _ = simulate(close, open_, nifty, feat_cfg, start, ok=tables.get(key), cap=2 if key == "sector" else 0)
-        tested.append(dict(key=key, name=title, what=what, after_tax=perf(eq), halves=halves(eq), **extra))
+        kw = dict(ok=tables.get(key), cap=2 if key == "sector" else 0)
+        eq, pre, extra, _ = simulate(close, open_, nifty, feat_cfg, start, **kw)
+        runs = [quick(eq)] + [quick(simulate(close, open_, nifty, feat_cfg, start + k, **kw)[0]) for k in range(1, OFFSETS)]
+        c_, d_ = np.array([x[0] for x in runs]), np.array([x[1] for x in runs])
+        tested.append(dict(key=key, name=title, what=what, after_tax=perf(eq), halves=halves(eq), **extra,
+                           cagr=spread(c_), maxdd=spread(d_), cagr_diff=round(float(np.median(c_ - bc)), 1), maxdd_diff=round(float(np.median(d_ - bd)), 1),
+                           ahead=int((c_ > bc + 0.05).sum()), behind=int((c_ < bc - 0.05).sum()),
+                           shallower=int((d_ < bd - 0.05).sum()), deeper=int((d_ > bd + 0.05).sum())))
     span = close.index[start:]
     bench = {"Nifty 50 index, buy and hold (dividends excluded)": nifty.loc[span] / nifty.loc[span[0]] * 100_000,
              "Equal weight of the same 200 stocks, no selection": (1 + close.pct_change(fill_method=None).loc[span].mean(axis=1).fillna(0)).cumprod() * 100_000}
     out = dict(generated=datetime.now(ns.IST).strftime("%Y-%m-%d %H:%M"), source=source, stocks=close.shape[1],
                first_day=str(span[0])[:10], last_day=str(span[-1])[:10], capital=100_000, rows=rows,
                benchmarks=[dict(name=k, **perf(v)) for k, v in bench.items()],
-               screens=dict(split=str(half)[:10], base_halves=halves(feat) if feat is not None else None, tested=tested))
+               screens=dict(split=str(half)[:10], base_halves=halves(feat) if feat is not None else None, offsets=OFFSETS,
+                            base=dict(cagr=spread(bc), maxdd=spread(bd)), tested=tested))
     if feat is not None:                                   # month-end series for the dashboard's chart and heatmap
         key = [feat.index.year, feat.index.month]
         me = pd.DataFrame({"s": feat, **{k: v for k, v in zip("ne", bench.values())}}).groupby(key).last()
@@ -312,7 +329,8 @@ def main(source: str):
     for t in tested:
         a = t["after_tax"]
         print(f"{'  + ' + t['name']:<74}{a['cagr']:>7}{'':>8}{a['maxdd']:>8}{a['worst_year']:>7}{a['best_year']:>7}{t['trades']:>8}{t['win_pct']:>6}"
-              f"{t['charges']:>9,}{t['tax']:>9,}{a['final']:>11,}  blocked {t['vetoes']}, empty slots {t['empty_slots']}, halves {t['halves']}")
+              f"{t['charges']:>9,}{t['tax']:>9,}{a['final']:>11,}  blocked {t['vetoes']}  across {OFFSETS} schedules: return {t['cagr']} (median diff {t['cagr_diff']}, ahead {t['ahead']}, behind {t['behind']}), fall {t['maxdd']} (shallower {t['shallower']}, deeper {t['deeper']})")
+    print(f"Current rule across {OFFSETS} review schedules: return per year {spread(bc)}, deepest fall {spread(bd)}")
     for b in out["benchmarks"]:
         print(f"{b['name']:<74}{b['cagr']:>7}{'':>8}{b['maxdd']:>8}{b['worst_year']:>7}{b['best_year']:>7}{'':>32}{b['final']:>11,}")
 
