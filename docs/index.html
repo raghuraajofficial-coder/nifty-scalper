@@ -336,7 +336,7 @@ function renderBacktest() {
           <section class="card"><div class="head"><h3 id="bttl"></h3><span class="sp"></span><button class="chip" id="bclear" hidden>Show the whole year ✕</button></div><div class="tw" id="btable"></div></section></div></div>
       <div class="block"><h2>All years at a glance</h2><p class="sub">Percentage change each month. Stronger colour means a bigger move. Pick a cell to open that month above.</p><div class="tw" id="heat"></div></div>`;
   }
-  h += `<div class="block"><h2>Versions tested</h2><p class="sub">The highlighted row is the one the paper portfolio follows.</p><div class="tw"><table class="lt"><thead><tr><th>Version</th><th>Return per year</th><th>Deepest fall</th><th>Worst month</th><th>Worst year</th><th>Losing years</th><th>Trades</th><th>₹1 lakh became</th></tr></thead><tbody>` +
+  h += `<div class="block"><h2>Versions tested</h2><p class="sub">The highlighted row is the one the paper portfolio follows. Each row is a single run with one set of review days. As the section below shows, shifting those days moves a result by several points a year, so small gaps between rows mean little.</p><div class="tw"><table class="lt"><thead><tr><th>Version</th><th>Return per year</th><th>Deepest fall</th><th>Worst month</th><th>Worst year</th><th>Losing years</th><th>Trades</th><th>₹1 lakh became</th></tr></thead><tbody>` +
     B.rows.map(r => `<tr class="${f && r.name === f.name ? 'pick' : ''}"><td>${r.name.slice(3)}</td><td>${r.after_tax.cagr}%</td><td>−${r.after_tax.maxdd}%</td><td>${pct(r.after_tax.monthly.worst)}</td><td>${pct(r.after_tax.worst_year)}</td><td>${r.after_tax.down_years}</td><td>${r.trades}</td><td>${lakh(r.after_tax.final)}</td></tr>`).join('') +
     B.benchmarks.map(r => `<tr class="bench"><td>${r.name}</td><td>${r.cagr}%</td><td>−${r.maxdd}%</td><td>${pct(r.monthly.worst)}</td><td>${pct(r.worst_year)}</td><td>${r.down_years}</td><td>–</td><td>${lakh(r.final)}</td></tr>`).join('') + `</tbody></table></div></div>`;
   h += screensBlock(row);
@@ -378,7 +378,7 @@ function screensBlock(row) {
   });
   const diff = (x, word) => `<small class="${Math.abs(x) < 0.05 ? '' : x > 0 ? 'up' : 'down'}">${Math.abs(x) < 0.05 ? 'same' : word(x)}</small>`;
   const good = judged.filter(j => j.v === 'Helped'), bad = judged.filter(j => j.v === 'Hurt' || j.v === 'Safer but poorer');
-  const names = l => l.map(j => '"' + j.t.name + '"').join(l.length > 2 ? ', ' : ' and ');
+  const names = l => { const q = l.map(j => '"' + j.t.name + '"'); return q.length > 1 ? q.slice(0, -1).join(', ') + ' and ' + q[q.length - 1] : q[0]; };
   const top = (good.length
     ? `${names(good)} beat the current rule on most start days. That is worth tracking, but not yet worth adopting: see the cautions below.`
     : `None of the five screens improved on the current rule dependably. The sensible reading is to leave the rule as it is.`)
