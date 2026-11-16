@@ -100,6 +100,9 @@
   td { padding: 9px 10px; text-align: right; border-bottom: 1px solid var(--rule); white-space: nowrap; font-size: 14px; }
   tr:last-child td { border-bottom: 0; }
   .lt th:first-child, .lt td:first-child, .l2 th:nth-child(2), .l2 td:nth-child(2), .l3 th:nth-child(3), .l3 td:nth-child(3) { text-align: left; }
+  .scr td { vertical-align: top; } .scr td small { display: block; font: 400 12.5px system-ui, sans-serif; color: var(--muted); margin-top: 2px; } .scr td small.up { color: var(--up); } .scr td small.down { color: var(--down); }
+  .scr td:first-child { min-width: 250px; max-width: 340px; white-space: normal; } .scr td:last-child { min-width: 200px; max-width: 280px; white-space: normal; text-align: left; } .scr th:last-child { text-align: left; }
+  .infer { margin-top: 18px; background: var(--panel); border-radius: 12px; padding: 14px 18px; max-width: 80ch; } .infer h3 { font: 700 15px var(--display); margin: 0 0 6px; } .infer p { margin: 0 0 8px; } .infer ul { margin: 0; padding-left: 18px; color: var(--ink2); font-size: 14px; } .infer li { margin: 4px 0; }
   tr.pick td { background: rgba(42,120,214,.09); font-weight: 600; }
   tr.bench td { color: var(--ink2); font-style: italic; }
   .heat td, .heat th { padding: 6px 4px; text-align: center; font-size: 12.5px; border: 0; }
@@ -336,6 +339,7 @@ function renderBacktest() {
   h += `<div class="block"><h2>Versions tested</h2><p class="sub">The highlighted row is the one the paper portfolio follows.</p><div class="tw"><table class="lt"><thead><tr><th>Version</th><th>Return per year</th><th>Deepest fall</th><th>Worst month</th><th>Worst year</th><th>Losing years</th><th>Trades</th><th>₹1 lakh became</th></tr></thead><tbody>` +
     B.rows.map(r => `<tr class="${f && r.name === f.name ? 'pick' : ''}"><td>${r.name.slice(3)}</td><td>${r.after_tax.cagr}%</td><td>−${r.after_tax.maxdd}%</td><td>${pct(r.after_tax.monthly.worst)}</td><td>${pct(r.after_tax.worst_year)}</td><td>${r.after_tax.down_years}</td><td>${r.trades}</td><td>${lakh(r.after_tax.final)}</td></tr>`).join('') +
     B.benchmarks.map(r => `<tr class="bench"><td>${r.name}</td><td>${r.cagr}%</td><td>−${r.maxdd}%</td><td>${pct(r.monthly.worst)}</td><td>${pct(r.worst_year)}</td><td>${r.down_years}</td><td>–</td><td>${lakh(r.final)}</td></tr>`).join('') + `</tbody></table></div></div>`;
+  h += screensBlock(row);
   el.innerHTML = h;
   if (!a) return;
   lineChart($('btchart'), f.curve.map(c => c[0]), [
@@ -352,6 +356,46 @@ function renderBacktest() {
     }).join('') + (s => s ? `<td class="yr ${cls(s.chg)}" title="${s.tip}" aria-label="${s.tip}"><b class="fig">${signed(s.chg)}</b><span>${pct(s.pct)}</span></td>` : '<td class="yr">–</td>')(yearStats(y)) + '</tr>').join('') + '</tbody></table>';
   if (!bYear || !years.includes(bYear)) bYear = years[years.length - 1];
   renderMonths();
+}
+/* Screens tested on top of the current rule: what was done, the results, and what they mean. */
+function screensBlock(row) {
+  const S = B.screens;
+  if (!S || !S.tested || !S.tested.length || !row) return '';
+  const b = row.after_tax, bh = S.base_halves || [], yrs = Object.keys(b.years), mid = MONTHS[Number(S.split.slice(5, 7)) - 1] + ' ' + S.split.slice(0, 4);
+  const d1 = n => `<small class="${Math.abs(n) < 0.05 ? '' : n > 0 ? 'up' : 'down'}">${Math.abs(n) < 0.05 ? 'same' : pct(n).replace('%', '') + ' pts'}</small>`;
+  const judged = S.tested.map(t => {
+    const a = t.after_tax, dc = a.cagr - b.cagr, dd = b.maxdd - a.maxdd, h = t.halves || [];
+    const beat = yrs.filter(y => ok(a.years[y]) && a.years[y] > b.years[y] + 0.05).length, lost = yrs.filter(y => ok(a.years[y]) && a.years[y] < b.years[y] - 0.05).length;
+    const h1 = h[0] - bh[0], h2 = h[1] - bh[1];
+    let v, why;
+    if (!t.vetoes) { v = 'Never triggered'; why = 'No purchase was ever blocked, so the result is identical to the current rule.'; }
+    else if (Math.abs(dc) < 1 && Math.abs(dd) < 2) { v = 'No real difference'; why = 'Return and deepest fall both stayed within a point or two of the current rule.'; }
+    else if (dc >= 1 && dd >= 0 && h1 > 0 && h2 > 0 && beat > lost) { v = 'Helped in both halves'; why = 'Higher return without a deeper fall, and ahead in both halves of the test.'; }
+    else if (dc <= -1 && dd <= 0) { v = 'Hurt'; why = 'Lower return with no reduction in the deepest fall.'; }
+    else if (dc <= -1 && dd > 0) { v = 'Safer but poorer'; why = `The deepest fall was ${dd.toFixed(1)} points shallower, at a cost of ${Math.abs(dc).toFixed(1)} points of return a year.`; }
+    else if (dc >= 1 && dd < 0) { v = 'Richer but rougher'; why = `Return rose ${dc.toFixed(1)} points a year, but the deepest fall was ${Math.abs(dd).toFixed(1)} points worse.`; }
+    else if (dc >= 1) { v = 'Helped in one half only'; why = `The gain came from the ${h1 > h2 ? 'first' : 'second'} half of the test; in the other half it ${Math.min(h1, h2) < 0 ? 'did worse than' : 'barely differed from'} the current rule.`; }
+    else if (dd >= 2) { v = 'Smaller fall, similar return'; why = `The deepest fall was ${dd.toFixed(1)} points shallower, and the return was within a point of the current rule.`; }
+    else if (dd <= -2) { v = 'Deeper fall, similar return'; why = `The deepest fall was ${Math.abs(dd).toFixed(1)} points worse, and the return was within a point of the current rule.`; }
+    else { v = 'Mixed'; why = 'Small changes in opposite directions, with no clear pattern.'; }
+    return {t, a, dc, dd, beat, lost, h, v, why};
+  });
+  const good = judged.filter(j => j.v === 'Helped in both halves'), best = judged.reduce((x, y) => y.dc > x.dc ? y : x);
+  const names = l => l.map(j => '"' + j.t.name + '"').join(' and ');
+  const top = good.length
+    ? `${names(good)} improved on the current rule in both halves of the test. That is worth tracking, but not yet worth adopting: see the cautions below.`
+    : `None of the five screens improved on the current rule reliably. The best by return, "${best.t.name}", ${best.dc >= 0.05 ? 'added ' + best.dc.toFixed(1) + ' points a year' : 'did not beat it'}${best.dc >= 1 ? ', but not consistently' : ''}. The sensible reading is to leave the rule as it is.`;
+  return `<div class="block"><h2>Would screening the picks have helped?</h2>
+    <p class="sub">Reading up on a stock before buying it can't be tested on the past, because any test would be coloured by knowing what happened next. What can be tested is a fixed screen that stands in for a common reason to reject a stock. Each screen below was added on its own to the rule the paper portfolio follows. A screen can only block a new purchase; the next-ranked stock inside the top 20 is bought in its place. Every threshold was set before the results were seen, and each screen uses only prices and volumes known on the day.</p>
+    <div class="tw"><table class="lt scr"><thead><tr><th>Screen</th><th>Return per year</th><th>Deepest fall</th><th>Years ahead / behind</th><th>Before ${mid} / after</th><th>Purchases blocked</th><th>Reading</th></tr></thead><tbody>
+      <tr class="pick"><td>Current rule, no screen</td><td>${b.cagr}%</td><td>−${b.maxdd}%</td><td>–</td><td>${ok(bh[0]) ? bh[0] + '% / ' + bh[1] + '%' : '–'}</td><td>–</td><td>The yardstick</td></tr>` +
+      judged.map(j => `<tr><td><b>${j.t.name}</b><small>${j.t.what}</small></td><td>${j.a.cagr}%${d1(j.dc)}</td><td>−${j.a.maxdd}%<small class="${Math.abs(j.dd) < 0.05 ? '' : j.dd > 0 ? 'up' : 'down'}">${Math.abs(j.dd) < 0.05 ? 'same' : Math.abs(j.dd).toFixed(1) + ' pts ' + (j.dd > 0 ? 'shallower' : 'deeper')}</small></td><td>${j.beat} / ${j.lost}<small>of ${yrs.length} years</small></td>
+        <td>${ok(j.h[0]) ? j.h[0] + '% / ' + j.h[1] + '%' : '–'}</td><td>${j.t.vetoes}${j.t.empty_slots ? `<small>${j.t.empty_slots} slot${j.t.empty_slots === 1 ? '' : 's'} left empty</small>` : ''}</td><td><b>${j.v}</b><small>${j.why}</small></td></tr>`).join('') + `</tbody></table></div>
+    <div class="infer"><h3>What to infer</h3><p>${top}</p><ul>
+      <li><b>Small gaps are noise.</b> With five holdings over ${yrs.length} years, a difference of a point or two a year can come from a single stock. Only a gap that shows up in both halves of the test deserves attention.</li>
+      <li><b>Five tries flatter the winner.</b> Test enough screens and one will look good by luck. The best result here overstates what that screen would do in future.</li>
+      <li><b>The same survivor bias applies.</b> These figures use today's Nifty 200 members, like every other number on this page.</li>
+      <li><b>Nothing here has been applied.</b> The paper portfolio still follows the current rule with no screen.</li></ul></div></div>`;
 }
 let bYear = null, bSel = null;
 /* Portfolio value at the start and end of a year, from the month-end values in the curve. */

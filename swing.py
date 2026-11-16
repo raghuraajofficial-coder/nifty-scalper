@@ -58,16 +58,18 @@ def delivery_cost(value: float, side: str) -> float:
     return cost + (value * 0.00015 if side == "B" else 20 * 1.18)   # stamp duty on buys, DP charge on sells
 
 
-def load(source: str, period: str = "12y"):
+def load(source: str, period: str = "12y", volume: bool = False):
     syms = orb.NIFTY200
     if source == "demo":
         rng = np.random.default_rng(5)
         idx = pd.bdate_range(end=datetime.now().date(), periods=3000)
         drift = rng.normal(0.0004, 0.0004, len(syms))
         close = pd.DataFrame(100 * np.exp(np.cumsum(rng.normal(drift, 0.018, (len(idx), len(syms))), axis=0)), index=idx, columns=syms)
-        return close, close.shift().fillna(close) * (1 + rng.normal(0, 0.004, close.shape)), close.mean(axis=1)
+        open_ = close.shift().fillna(close) * (1 + rng.normal(0, 0.004, close.shape))
+        vol = pd.DataFrame(rng.lognormal(12, 1, close.shape) * rng.lognormal(0, 1, len(syms)), index=idx, columns=syms)
+        return (close, open_, close.mean(axis=1), vol) if volume else (close, open_, close.mean(axis=1))
     import yfinance as yf
-    closes, opens = {}, {}
+    closes, opens, vols = {}, {}, {}
     for i in range(0, len(syms), 50):
         raw = yf.download([f"{s}.NS" for s in syms[i:i + 50]], period=period, interval="1d", auto_adjust=True,
                           group_by="ticker", progress=False, threads=True)
@@ -77,24 +79,73 @@ def load(source: str, period: str = "12y"):
             except KeyError:
                 continue
             if len(df) > 300:
-                closes[s], opens[s] = df["Close"], df["Open"]
+                closes[s], opens[s], vols[s] = df["Close"], df["Open"], df["Volume"]
         time.sleep(1.5)
     nifty = yf.download("^NSEI", period=period, interval="1d", auto_adjust=True, progress=False)["Close"].squeeze()
-    close, open_ = pd.DataFrame(closes), pd.DataFrame(opens)
-    for x in (close, open_, nifty):
+    close, open_, vol = pd.DataFrame(closes), pd.DataFrame(opens), pd.DataFrame(vols)
+    for x in (close, open_, nifty, vol):
         x.index = pd.DatetimeIndex(x.index).tz_localize(None)
     close = close[close.index.isin(nifty.index)]
-    return close, open_.reindex(close.index), nifty.reindex(close.index).ffill()
+    out = (close, open_.reindex(close.index), nifty.reindex(close.index).ffill())
+    return out + (vol.reindex(close.index),) if volume else out
 
 
-def simulate(close, open_, nifty, c: Cfg, start: int):
+# Broad sector groups, assigned by hand, for the sector-cap screen. A stock not listed here is its own group.
+SECTORS = {
+    "Banks": "AUBANK AXISBANK BANKBARODA BANKINDIA MAHABANK CANBK FEDERALBNK HDFCBANK ICICIBANK IDFCFIRSTB INDIANB INDUSINDBK KOTAKBANK PNB SBIN UNIONBANK YESBANK",
+    "Financial services": "360ONE ABCAPITAL BSE BAJFINANCE BAJAJFINSV BAJAJHLDNG CHOLAFIN GROWW HDFCAMC HDFCLIFE ICICIGI ICICIAMC IRFC IREDA JIOFIN LTF LICHSGFIN LICI M&MFIN MFSL MOTILALOFS MCX MUTHOOTFIN PAYTM POLICYBZR PFC RECLTD SBICARD SBILIFE SHRIRAMFIN TATACAP",
+    "Capital goods": "ABB APLAPOLLO APARINDS ASTRAL BDL BEL BHEL CGPOWER COCHINSHIP CUMMINSIND GVT&D HAL POWERINDIA KEI MAZDOCK POLYCAB PREMIERENE ENRIN SIEMENS SUPREMEIND SUZLON WAAREEENER",
+    "Construction": "LT RVNL",
+    "Automobiles": "ASHOKLEY BAJAJ-AUTO BHARATFORG BOSCHLTD EICHERMOT EXIDEIND HEROMOTOCO HYUNDAI MRF M&M MARUTI MOTHERSON TVSMOTOR TMCV TMPV TIINDIA",
+    "Oil, gas and coal": "ATGL BPCL COALINDIA GAIL HINDPETRO IOC ONGC OIL RELIANCE",
+    "Power": "ADANIENSOL ADANIGREEN ADANIPOWER JSWENERGY NHPC NLCINDIA NTPC POWERGRID TATAPOWER",
+    "Metals and mining": "ADANIENT HINDALCO HINDCOPPER HINDZINC JSWSTEEL JINDALSTEL NMDC NATIONALUM SAIL TATASTEEL VEDL",
+    "Cement": "AMBUJACEM GRASIM ULTRACEMCO",
+    "Healthcare": "APOLLOHOSP AUROPHARMA BIOCON CIPLA DIVISLAB DRREDDY FORTIS GLENMARK LAURUSLABS LUPIN MANKIND MAXHEALTH SUNPHARMA TORNTPHARM ZYDUSLIFE",
+    "Information technology": "COFORGE HCLTECH INFY LTM MPHASIS OFSS PERSISTENT TCS TECHM WIPRO",
+    "Consumer staples": "BRITANNIA COLPAL DABUR GODFRYPHLP GODREJCP HINDUNILVR ITC MARICO NESTLEIND PATANJALI RADICO TATACONSUM UNITDSPR VBL",
+    "Consumer durables": "ASIANPAINT BLUESTARCO DIXON HAVELLS KALYANKJIL LGEINDIA PAGEIND TITAN VOLTAS",
+    "Consumer services": "DMART ETERNAL NYKAA INDHOTEL IRCTC NAUKRI JUBLFOOD LENSKART MEESHO SWIGGY TRENT VMM",
+    "Property": "DLF GODREJPROP LODHA OBEROIRLTY PHOENIXLTD PRESTIGE",
+    "Chemicals": "PIIND PIDILITIND SRF UPL SOLARINDS",
+    "Telecom": "BHARTIARTL INDUSTOWER TATACOMM IDEA",
+    "Transport": "ADANIPORTS CONCOR GMRAIRPORT INDIGO",
+}
+SECTOR = {sym: name for name, syms in SECTORS.items() for sym in syms.split()}
+
+
+def screens(close, vol, c: "Cfg") -> dict:
+    """Yes/no tables (date x stock): may this stock be bought on this day? One table per screen.
+    Every threshold was fixed before the results were seen, and each uses only data up to that day."""
+    r = np.log(close).diff()
+    w = c.look - c.skip                                     # the same window the momentum ranking measures
+    total = r.rolling(w).sum().shift(c.skip)
+    top2 = pd.DataFrame(np.nan, index=close.index, columns=close.columns)
+    for s in close.columns:                                  # sum of the two biggest daily gains inside the window
+        x = r[s].fillna(0).to_numpy()
+        if len(x) >= w:
+            win = np.lib.stride_tricks.sliding_window_view(x, w)
+            top2.iloc[w - 1:, top2.columns.get_loc(s)] = np.partition(win, w - 2, axis=1)[:, -2:].sum(axis=1)
+    top2 = top2.shift(c.skip)
+    up_share = (r > 0).where(r.notna()).rolling(w).mean().shift(c.skip)
+    sd = r.rolling(63).std()
+    out = {"jump": ~((total > 0) & (top2 > 0.5 * total)),
+           "smooth": up_share.ge(up_share.median(axis=1), axis=0),
+           "calm": sd.le(sd.quantile(0.8, axis=1), axis=0)}
+    if vol is not None:
+        traded = (close * vol).rolling(63).median()
+        out["liquid"] = traded.ge(traded.quantile(0.2, axis=1), axis=0)
+    return out
+
+
+def simulate(close, open_, nifty, c: Cfg, start: int, ok=None, cap: int = 0):
     dates = close.index
     mom = close.shift(c.skip) / close.shift(c.look) - 1
     ma = nifty.rolling(200).mean()
     last = close.ffill()
     cash, pos, pending, stops = c.capital, {}, None, set()
     fy_gain, carry, tax_paid, charges, n_trades, wins = 0.0, 0.0, 0.0, 0.0, 0, 0
-    curve, closed = [], []
+    curve, closed, vetoes, short = [], [], 0, 0
     for i in range(start, len(dates)):
         d = dates[i]
         if pending is not None or stops:
@@ -137,7 +188,19 @@ def simulate(close, open_, nifty, c: Cfg, start: int):
             else:
                 rank = mom.loc[d][close.loc[d].notna()].dropna().sort_values(ascending=False).index
                 keep = [s for s in pos if s in rank[:c.buffer] and s not in stops]
-                pending = keep + [s for s in rank[:c.top_n] if s not in keep][:c.top_n - len(keep)]
+                new = []
+                for s in [s for s in rank[:c.buffer] if s not in keep]:     # best-ranked first, never below the top 20
+                    if len(keep) + len(new) >= c.top_n:
+                        break
+                    if ok is not None and not bool(ok.at[d, s]):
+                        vetoes += 1
+                        continue
+                    if cap and sum(SECTOR.get(x, x) == SECTOR.get(s, s) for x in keep + new) >= cap:
+                        vetoes += 1
+                        continue
+                    new.append(s)
+                short += c.top_n - len(keep) - len(new)                     # slots left empty because too few passed
+                pending = keep + new
         if i + 1 == len(dates) or (d.month == 3 and dates[i + 1].month == 4):   # financial year end: settle tax
             taxable = fy_gain - carry
             tax = max(0.0, taxable) * TAX
@@ -155,7 +218,8 @@ def simulate(close, open_, nifty, c: Cfg, start: int):
                          avg_win_pct=round(float(g[g > 0].mean()), 1) if (g > 0).any() else 0.0,
                          avg_loss_pct=round(float(g[g <= 0].mean()), 1) if (g <= 0).any() else 0.0,
                          best_trade_pct=round(float(g.max()), 1), worst_trade_pct=round(float(g.min()), 1),
-                         avg_hold_weeks=round(float(held.mean()) / 5, 1), median_hold_weeks=round(float(np.median(held)) / 5, 1)), closed
+                         avg_hold_weeks=round(float(held.mean()) / 5, 1), median_hold_weeks=round(float(np.median(held)) / 5, 1),
+                         vetoes=vetoes, empty_slots=short), closed
 
 
 def perf(eq: pd.Series) -> dict:
@@ -190,8 +254,19 @@ VARIANTS = [
 ]
 
 
+# Mechanical screens tested on top of the featured version. Each can only block a NEW purchase; the next-ranked
+# stock inside the top 20 takes its place. They stand in for the usual reasons a researcher would reject a stock.
+SCREENS = [
+    ("jump", "Skip one-off jumps", "Skips a stock when its two biggest single-day gains make up more than half of its rise over the ranking period. That pattern is typical of a takeover offer or a single piece of news."),
+    ("smooth", "Prefer steady risers", "Skips a stock if it rose on fewer days than the typical Nifty 200 stock did over the ranking period. A steady climb is thought to last longer than a few big bursts."),
+    ("calm", "Skip the most volatile", "Skips a stock if its daily swings over the past three months are among the wildest fifth of the 200."),
+    ("liquid", "Skip thinly traded", "Skips a stock if the rupee value traded in it each day over the past three months is among the lowest fifth of the 200."),
+    ("sector", "At most two per sector", "Skips a stock if two holdings are already from the same sector, using 18 broad sector groups."),
+]
+
+
 def main(source: str):
-    close, open_, nifty = load(source)
+    close, open_, nifty, vol = load(source, volume=True)
     start = Cfg().look + 2
     rows, feat = [], None
     for name, over in VARIANTS:
@@ -199,12 +274,24 @@ def main(source: str):
         rows.append(dict(name=name, after_tax=perf(eq), before_tax_cagr=perf(pre)["cagr"], **extra))
         if name.startswith(FEATURED):
             feat, feat_log = eq, log
+    feat_cfg = replace(Cfg(), **next(o for n, o in VARIANTS if n.startswith(FEATURED)))
+    tables = screens(close, vol, feat_cfg)
+    half = close.index[start + (len(close.index) - start) // 2]
+    def halves(eq):                                        # return per year in each half of the test, to see if a gain is consistent
+        a, b = eq[eq.index <= half], eq[eq.index >= half]
+        g = lambda x: round(((x.iloc[-1] / x.iloc[0]) ** (365.25 / max(1, (x.index[-1] - x.index[0]).days)) - 1) * 100, 1)
+        return [float(g(a)), float(g(b))]
+    tested = []
+    for key, title, what in SCREENS:
+        eq, pre, extra, _ = simulate(close, open_, nifty, feat_cfg, start, ok=tables.get(key), cap=2 if key == "sector" else 0)
+        tested.append(dict(key=key, name=title, what=what, after_tax=perf(eq), halves=halves(eq), **extra))
     span = close.index[start:]
     bench = {"Nifty 50 index, buy and hold (dividends excluded)": nifty.loc[span] / nifty.loc[span[0]] * 100_000,
              "Equal weight of the same 200 stocks, no selection": (1 + close.pct_change(fill_method=None).loc[span].mean(axis=1).fillna(0)).cumprod() * 100_000}
     out = dict(generated=datetime.now(ns.IST).strftime("%Y-%m-%d %H:%M"), source=source, stocks=close.shape[1],
                first_day=str(span[0])[:10], last_day=str(span[-1])[:10], capital=100_000, rows=rows,
-               benchmarks=[dict(name=k, **perf(v)) for k, v in bench.items()])
+               benchmarks=[dict(name=k, **perf(v)) for k, v in bench.items()],
+               screens=dict(split=str(half)[:10], base_halves=halves(feat) if feat is not None else None, tested=tested))
     if feat is not None:                                   # month-end series for the dashboard's chart and heatmap
         key = [feat.index.year, feat.index.month]
         me = pd.DataFrame({"s": feat, **{k: v for k, v in zip("ne", bench.values())}}).groupby(key).last()
@@ -222,6 +309,10 @@ def main(source: str):
         a = r["after_tax"]
         print(f"{r['name']:<74}{a['cagr']:>7}{r['before_tax_cagr']:>8}{a['maxdd']:>8}{a['worst_year']:>7}{a['best_year']:>7}"
               f"{r['trades']:>8}{r['win_pct']:>6}{r['charges']:>9,}{r['tax']:>9,}{a['final']:>11,}")
+    for t in tested:
+        a = t["after_tax"]
+        print(f"{'  + ' + t['name']:<74}{a['cagr']:>7}{'':>8}{a['maxdd']:>8}{a['worst_year']:>7}{a['best_year']:>7}{t['trades']:>8}{t['win_pct']:>6}"
+              f"{t['charges']:>9,}{t['tax']:>9,}{a['final']:>11,}  blocked {t['vetoes']}, empty slots {t['empty_slots']}, halves {t['halves']}")
     for b in out["benchmarks"]:
         print(f"{b['name']:<74}{b['cagr']:>7}{'':>8}{b['maxdd']:>8}{b['worst_year']:>7}{b['best_year']:>7}{'':>32}{b['final']:>11,}")
 
