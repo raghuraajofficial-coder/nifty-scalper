@@ -1,7 +1,13 @@
 name: Paper portfolio
 on:
   schedule:
-    - cron: "30 12 * * 1-5"   # 18:00 IST on weekdays, after the market close
+    # GitHub often delays or skips scheduled runs, so several are queued after the market close.
+    # A run that finds no new trading day changes nothing, so the extra ones are harmless.
+    - cron: "17 12 * * 1-5"   # 17:47 IST
+    - cron: "47 13 * * 1-5"   # 19:17 IST
+    - cron: "17 15 * * 1-5"   # 20:47 IST
+    - cron: "17 17 * * 1-5"   # 22:47 IST
+    - cron: "17 1 * * 2-6"    # 06:47 IST next morning, a last catch-up before the market opens
   workflow_dispatch:
   push:
     paths:
