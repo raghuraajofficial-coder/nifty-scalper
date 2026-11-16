@@ -1,107 +1,152 @@
 {
  "view": {
-  "updated": "2026-11-13 18:25",
-  "as_of": "2026-11-13",
+  "updated": "2026-11-16 20:11",
+  "as_of": "2026-11-16",
   "started": "2026-11-13",
   "capital": 100000.0,
-  "equity": 100000,
-  "cash": 100000,
-  "pnl": 0,
-  "pnl_pct": 0.0,
-  "charges": 0,
+  "equity": 97413,
+  "cash": 7099,
+  "pnl": -2587,
+  "pnl_pct": -2.59,
+  "charges": 219,
   "tax_paid": 0,
   "tax_due": 0,
   "realised": 0,
-  "next_review": 20,
+  "next_review": 19,
   "trail_pct": 15.0,
   "market": {
-   "nifty": 25144,
+   "nifty": 25291,
    "ma200": 23992,
    "above": true
   },
-  "holdings": [],
-  "buys": [
+  "holdings": [
    {
-    "sym": "APARINDS",
-    "last": 14667.0,
-    "rank": 1,
-    "mom": 116.7
-   },
-   {
-    "sym": "LAURUSLABS",
-    "last": 2424.0,
-    "rank": 2,
-    "mom": 109.7
-   },
-   {
-    "sym": "MCX",
-    "last": 3720.0,
-    "rank": 3,
-    "mom": 77.8
+    "sym": "MOTHERSON",
+    "qty": 121,
+    "entry": 164.16,
+    "date": "2026-11-16",
+    "last": 162.98,
+    "peak": 164.16,
+    "stop": 139.54,
+    "value": 19721,
+    "pnl": -190,
+    "pnl_pct": -1.0,
+    "room_pct": 16.8,
+    "rank": 5,
+    "selling": false
    },
    {
     "sym": "BHEL",
-    "last": 436.3,
-    "rank": 4,
-    "mom": 66.1
+    "qty": 45,
+    "entry": 437.44,
+    "date": "2026-11-16",
+    "last": 430.1,
+    "peak": 437.44,
+    "stop": 371.82,
+    "value": 19355,
+    "pnl": -377,
+    "pnl_pct": -1.9,
+    "room_pct": 15.7,
+    "rank": 3,
+    "selling": false
    },
    {
-    "sym": "MOTHERSON",
-    "last": 164.8,
-    "rank": 5,
-    "mom": 53.9
+    "sym": "MCX",
+    "qty": 5,
+    "entry": 3776.37,
+    "date": "2026-11-16",
+    "last": 3729.6,
+    "peak": 3776.37,
+    "stop": 3209.92,
+    "value": 18648,
+    "pnl": -279,
+    "pnl_pct": -1.5,
+    "room_pct": 16.2,
+    "rank": 4,
+    "selling": false
+   },
+   {
+    "sym": "LAURUSLABS",
+    "qty": 8,
+    "entry": 2432.43,
+    "date": "2026-11-16",
+    "last": 2220.0,
+    "peak": 2432.43,
+    "stop": 2067.57,
+    "value": 17760,
+    "pnl": -1746,
+    "pnl_pct": -8.9,
+    "room_pct": 7.4,
+    "rank": 2,
+    "selling": false
+   },
+   {
+    "sym": "APARINDS",
+    "qty": 1,
+    "entry": 14791.78,
+    "date": "2026-11-16",
+    "last": 14831.0,
+    "peak": 14831.0,
+    "stop": 12606.35,
+    "value": 14831,
+    "pnl": 4,
+    "pnl_pct": 0.0,
+    "room_pct": 17.6,
+    "rank": 1,
+    "selling": false
    }
   ],
+  "buys": [],
   "sells": [],
   "leaders": [
    {
     "sym": "APARINDS",
-    "mom": 116.7,
-    "held": false
+    "mom": 114.0,
+    "held": true
    },
    {
     "sym": "LAURUSLABS",
-    "mom": 109.7,
-    "held": false
-   },
-   {
-    "sym": "MCX",
-    "mom": 77.8,
-    "held": false
+    "mom": 108.1,
+    "held": true
    },
    {
     "sym": "BHEL",
-    "mom": 66.1,
-    "held": false
+    "mom": 79.0,
+    "held": true
+   },
+   {
+    "sym": "MCX",
+    "mom": 76.1,
+    "held": true
    },
    {
     "sym": "MOTHERSON",
-    "mom": 53.9,
+    "mom": 54.5,
+    "held": true
+   },
+   {
+    "sym": "SOLARINDS",
+    "mom": 50.9,
     "held": false
    },
    {
     "sym": "POWERINDIA",
-    "mom": 47.9,
+    "mom": 50.4,
     "held": false
    },
    {
     "sym": "MAHABANK",
-    "mom": 47.7,
+    "mom": 49.2,
     "held": false
    },
    {
-    "sym": "SOLARINDS",
-    "mom": 47.5,
+    "sym": "HINDCOPPER",
+    "mom": 45.9,
     "held": false
    },
    {
     "sym": "AUROPHARMA",
-    "mom": 46.6,
-    "held": false
-   },
-   {
-    "sym": "NATIONALUM",
-    "mom": 42.5,
+    "mom": 45.8,
     "held": false
    }
   ],
@@ -111,32 +156,72 @@
     "d": "2026-11-13",
     "eq": 100000.0,
     "n": 25144.3
+   },
+   {
+    "d": "2026-11-16",
+    "eq": 97413.08,
+    "n": 25291.1
    }
   ]
  },
  "state": {
   "started": "2026-11-13",
-  "last_day": "2026-11-13",
-  "cash": 100000.0,
-  "pos": {},
-  "pending": [
-   "APARINDS",
-   "LAURUSLABS",
-   "MCX",
-   "BHEL",
-   "MOTHERSON"
-  ],
+  "last_day": "2026-11-16",
+  "cash": 7098.995560185227,
+  "pos": {
+   "APARINDS": {
+    "qty": 1,
+    "cost": 14826.79514162046,
+    "entry": 14791.776999999998,
+    "date": "2026-11-16",
+    "peak": 14831.0
+   },
+   "LAURUSLABS": {
+    "qty": 8,
+    "cost": 19505.50839501264,
+    "entry": 2432.43,
+    "date": "2026-11-16",
+    "peak": 2432.43
+   },
+   "MCX": {
+    "qty": 5,
+    "cost": 18926.564525684025,
+    "entry": 3776.372697753906,
+    "date": "2026-11-16",
+    "peak": 3776.372697753906
+   },
+   "BHEL": {
+    "qty": 45,
+    "cost": 19731.266594028988,
+    "entry": 437.43699999999995,
+    "date": "2026-11-16",
+    "peak": 437.43699999999995
+   },
+   "MOTHERSON": {
+    "qty": 121,
+    "cost": 19910.86978346866,
+    "entry": 164.164,
+    "date": "2026-11-16",
+    "peak": 164.164
+   }
+  },
+  "pending": null,
   "stops": [],
-  "since_review": 0,
+  "since_review": 1,
   "history": [
    {
     "d": "2026-11-13",
     "eq": 100000.0,
     "n": 25144.3
+   },
+   {
+    "d": "2026-11-16",
+    "eq": 97413.08,
+    "n": 25291.1
    }
   ],
   "closed": [],
-  "charges": 0.0,
+  "charges": 219.4149510452499,
   "fy_gain": 0.0,
   "carry": 0.0,
   "tax_paid": 0.0
