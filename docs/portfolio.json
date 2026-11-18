@@ -1,22 +1,22 @@
 {
  "view": {
-  "updated": "2026-11-18 14:07",
-  "as_of": "2026-11-17",
+  "updated": "2026-11-18 18:25",
+  "as_of": "2026-11-18",
   "started": "2026-11-13",
   "capital": 100000.0,
-  "equity": 97771,
+  "equity": 95770,
   "cash": 7099,
-  "pnl": -2229,
-  "pnl_pct": -2.23,
+  "pnl": -4230,
+  "pnl_pct": -4.23,
   "charges": 219,
   "tax_paid": 0,
   "tax_due": 0,
   "realised": 0,
-  "next_review": 18,
+  "next_review": 17,
   "trail_pct": 15.0,
   "market": {
-   "nifty": 25387,
-   "ma200": 23993,
+   "nifty": 25228,
+   "ma200": 23994,
    "above": true
   },
   "holdings": [
@@ -25,13 +25,13 @@
     "qty": 121,
     "entry": 164.16,
     "date": "2026-11-16",
-    "last": 164.39,
+    "last": 157.24,
     "peak": 164.39,
     "stop": 139.73,
-    "value": 19891,
-    "pnl": -20,
-    "pnl_pct": -0.1,
-    "room_pct": 17.6,
+    "value": 19026,
+    "pnl": -885,
+    "pnl_pct": -4.4,
+    "room_pct": 12.5,
     "rank": 5,
     "selling": false
    },
@@ -40,13 +40,13 @@
     "qty": 45,
     "entry": 437.44,
     "date": "2026-11-16",
-    "last": 430.65,
+    "last": 421.7,
     "peak": 437.44,
     "stop": 371.82,
-    "value": 19379,
-    "pnl": -352,
-    "pnl_pct": -1.8,
-    "room_pct": 15.8,
+    "value": 18977,
+    "pnl": -755,
+    "pnl_pct": -3.8,
+    "room_pct": 13.4,
     "rank": 4,
     "selling": false
    },
@@ -55,14 +55,14 @@
     "qty": 8,
     "entry": 2432.43,
     "date": "2026-11-16",
-    "last": 2338.0,
+    "last": 2322.5,
     "peak": 2432.43,
     "stop": 2067.57,
-    "value": 18704,
-    "pnl": -802,
-    "pnl_pct": -4.1,
-    "room_pct": 13.1,
-    "rank": 2,
+    "value": 18580,
+    "pnl": -926,
+    "pnl_pct": -4.7,
+    "room_pct": 12.3,
+    "rank": 1,
     "selling": false
    },
    {
@@ -70,13 +70,13 @@
     "qty": 5,
     "entry": 3776.37,
     "date": "2026-11-16",
-    "last": 3705.4,
+    "last": 3619.0,
     "peak": 3776.37,
     "stop": 3209.92,
-    "value": 18527,
-    "pnl": -400,
-    "pnl_pct": -2.1,
-    "room_pct": 15.4,
+    "value": 18095,
+    "pnl": -832,
+    "pnl_pct": -4.4,
+    "room_pct": 12.7,
     "rank": 3,
     "selling": false
    },
@@ -85,14 +85,14 @@
     "qty": 1,
     "entry": 14791.78,
     "date": "2026-11-16",
-    "last": 14171.0,
+    "last": 13993.0,
     "peak": 14831.0,
     "stop": 12606.35,
-    "value": 14171,
-    "pnl": -656,
-    "pnl_pct": -4.4,
-    "room_pct": 12.4,
-    "rank": 1,
+    "value": 13993,
+    "pnl": -834,
+    "pnl_pct": -5.6,
+    "room_pct": 11.0,
+    "rank": 2,
     "selling": false
    }
   ],
@@ -100,53 +100,53 @@
   "sells": [],
   "leaders": [
    {
-    "sym": "APARINDS",
-    "mom": 105.0,
+    "sym": "LAURUSLABS",
+    "mom": 109.2,
     "held": true
    },
    {
-    "sym": "LAURUSLABS",
-    "mom": 101.8,
+    "sym": "APARINDS",
+    "mom": 88.6,
     "held": true
    },
    {
     "sym": "MCX",
-    "mom": 69.2,
+    "mom": 66.9,
     "held": true
    },
    {
     "sym": "BHEL",
-    "mom": 59.4,
+    "mom": 52.6,
     "held": true
    },
    {
     "sym": "MOTHERSON",
-    "mom": 57.4,
+    "mom": 52.5,
     "held": true
    },
    {
-    "sym": "AUROPHARMA",
-    "mom": 45.3,
+    "sym": "SOLARINDS",
+    "mom": 45.2,
     "held": false
    },
    {
     "sym": "MAHABANK",
-    "mom": 41.7,
-    "held": false
-   },
-   {
-    "sym": "ADANIENSOL",
-    "mom": 41.2,
+    "mom": 44.1,
     "held": false
    },
    {
     "sym": "FEDERALBNK",
-    "mom": 41.0,
+    "mom": 43.8,
     "held": false
    },
    {
-    "sym": "BHARATFORG",
-    "mom": 40.0,
+    "sym": "AUROPHARMA",
+    "mom": 42.7,
+    "held": false
+   },
+   {
+    "sym": "DIVISLAB",
+    "mom": 40.4,
     "held": false
    }
   ],
@@ -166,12 +166,17 @@
     "d": "2026-11-17",
     "eq": 97771.43,
     "n": 25387.4
+   },
+   {
+    "d": "2026-11-18",
+    "eq": 95769.54,
+    "n": 25227.95
    }
   ]
  },
  "state": {
   "started": "2026-11-13",
-  "last_day": "2026-11-17",
+  "last_day": "2026-11-18",
   "cash": 7098.995560185227,
   "pos": {
    "APARINDS": {
@@ -212,7 +217,7 @@
   },
   "pending": null,
   "stops": [],
-  "since_review": 2,
+  "since_review": 3,
   "history": [
    {
     "d": "2026-11-13",
@@ -228,6 +233,11 @@
     "d": "2026-11-17",
     "eq": 97771.43,
     "n": 25387.4
+   },
+   {
+    "d": "2026-11-18",
+    "eq": 95769.54,
+    "n": 25227.95
    }
   ],
   "closed": [],
