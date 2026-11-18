@@ -114,7 +114,9 @@ def view(st: dict, d, close, last, mom, nifty) -> dict:
 
 
 def main(source: str, replay: int):
-    close, open_, nifty = swing.load(source, "2y")
+    close, open_, nifty = swing.load(source, "2y", align=False)
+    if swing.INFO:
+        print(f"data: stocks to {swing.INFO['stocks_last']}, Nifty to {swing.INFO['nifty_last']}, stocks priced on the last days {swing.INFO['last_rows']}")
     close, open_, nifty = close.iloc[-400:], open_.iloc[-400:], nifty.iloc[-400:]
     now = datetime.now(ns.IST)
     if source != "demo" and str(close.index[-1])[:10] == now.strftime("%Y-%m-%d") and now.hour * 60 + now.minute < 15 * 60 + 45:
@@ -127,6 +129,12 @@ def main(source: str, replay: int):
     if st["last_day"] is None:
         sys.exit("No price data to process.")
     d = pd.Timestamp(st["last_day"])
+    if d not in close.index:                               # the price source has not caught up to a day already processed
+        print(f"prices end at {str(close.index[-1])[:10]}, before the last processed day {st['last_day']}; nothing to do")
+        return
+    for h in st["history"][-10:]:                          # the index value may arrive after the day was first recorded
+        if h["d"] in swing.INFO.get("nifty_days", ()) and pd.Timestamp(h["d"]) in nifty.index:
+            h["n"] = round(float(nifty.at[pd.Timestamp(h["d"])]), 2)
     FILE.parent.mkdir(exist_ok=True)
     FILE.write_text(json.dumps(dict(view=view(st, d, close, last, mom, nifty), state=st), indent=1))
     v = json.loads(FILE.read_text())["view"]

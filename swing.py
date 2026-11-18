@@ -58,7 +58,10 @@ def delivery_cost(value: float, side: str) -> float:
     return cost + (value * 0.00015 if side == "B" else 20 * 1.18)   # stamp duty on buys, DP charge on sells
 
 
-def load(source: str, period: str = "12y", volume: bool = False):
+INFO: dict = {}                               # what the last load() found, for the run log
+
+
+def load(source: str, period: str = "12y", volume: bool = False, align: bool = True):
     syms = orb.NIFTY200
     if source == "demo":
         rng = np.random.default_rng(5)
@@ -85,7 +88,12 @@ def load(source: str, period: str = "12y", volume: bool = False):
     close, open_, vol = pd.DataFrame(closes), pd.DataFrame(opens), pd.DataFrame(vols)
     for x in (close, open_, nifty, vol):
         x.index = pd.DatetimeIndex(x.index).tz_localize(None)
-    close = close[close.index.isin(nifty.index)]
+    INFO.update(stocks_last=str(close.index[-1])[:10], nifty_last=str(nifty.index[-1])[:10], nifty_days={str(d)[:10] for d in nifty.index[-30:]},
+                last_rows={str(d)[:10]: int(n) for d, n in close.notna().sum(axis=1).iloc[-4:].items()})
+    if align:                                              # backtest: only days the index also traded
+        close = close[close.index.isin(nifty.index)]
+    else:                                                  # live use: Yahoo can publish the index's bar hours after the stocks' bars,
+        close = close[close.notna().sum(axis=1) >= 0.8 * close.shape[1]]   # so keep any day most stocks have a price for
     out = (close, open_.reindex(close.index), nifty.reindex(close.index).ffill())
     return out + (vol.reindex(close.index),) if volume else out
 
