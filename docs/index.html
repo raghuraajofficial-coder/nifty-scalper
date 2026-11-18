@@ -262,13 +262,21 @@ function rail(h) {
       <span class="buy" style="left:${x(h.entry)}%"></span><span class="stop" style="left:${x(h.stop)}%"></span><span class="now" style="left:${x(h.last)}%"></span>
     </div><div class="key"><span><i style="background:var(--gold)"></i>Sells below ₹${px(h.stop)}</span><span>Bought ₹${px(h.entry)}</span><span>High ₹${px(h.peak)}</span></div></div>`;
 }
+/* The latest weekday whose evening update should have landed by now (19:30 IST), as YYYY-MM-DD. */
+function expectedDay() {
+  const t = new Date(Date.now() + 330 * 60000);            // shift to IST, then read with UTC getters
+  if (t.getUTCHours() * 60 + t.getUTCMinutes() < 19 * 60 + 30) t.setUTCDate(t.getUTCDate() - 1);
+  while (t.getUTCDay() === 0 || t.getUTCDay() === 6) t.setUTCDate(t.getUTCDate() - 1);
+  return t.toISOString().slice(0, 10);
+}
 function renderPortfolio() {
   const el = $('p-portfolio');
   if (!P) { el.innerHTML = '<p class="empty">The paper portfolio has not run yet. It updates after each market close, around 6 pm IST.</p>'; return; }
   const v = P, hist = v.history || [];
   $('stamp').textContent = 'Paper money only. Prices as of the close on ' + day(v.as_of);
-  const mk = v.market;
-  let h = `<div class="top"><div><p class="value fig">${inr(v.equity)}</p>
+  const mk = v.market, due = expectedDay();
+  let h = v.as_of < due ? `<p class="note" role="status"><b>Not yet updated for ${day(due)}.</b> The figures below are from ${day(v.as_of)}. Either the daily update is running late, or the market was closed that day.</p>` : '';
+  h += `<div class="top"><div><p class="value fig">${inr(v.equity)}</p>
       <p class="delta ${cls(v.pnl)}">${signed(v.pnl)} (${pct(v.pnl_pct, 2)})<small>since ${day(v.started)} on ${inr(v.capital)}</small></p></div>
       <div class="chart" id="eqchart"></div></div>
     <dl class="facts">

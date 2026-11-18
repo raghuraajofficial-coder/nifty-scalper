@@ -84,18 +84,42 @@ def load(source: str, period: str = "12y", volume: bool = False, align: bool = T
             if len(df) > 300:
                 closes[s], opens[s], vols[s] = df["Close"], df["Open"], df["Volume"]
         time.sleep(1.5)
+    if not align and closes:                               # live use: fetch again, one at a time, any stock missing the latest day
+        newest = max(df.index[-1] for df in closes.values())
+        behind = lambda: [s for s in syms if s not in closes or closes[s].index[-1] < newest]
+        INFO["missing_first"] = len(behind())
+        for attempt in range(2):
+            missing = behind()
+            if not missing:
+                break
+            time.sleep(10)
+            for s in missing:
+                try:
+                    df = yf.download(f"{s}.NS", period=period, interval="1d", auto_adjust=True, progress=False, threads=False, multi_level_index=False).dropna(subset=["Close"])
+                except Exception:
+                    continue
+                if len(df) > 300 and (s not in closes or df.index[-1] > closes[s].index[-1]):
+                    closes[s], opens[s], vols[s] = df["Close"], df["Open"], df["Volume"]
+        INFO["missing_after"] = len(behind())
     nifty = yf.download("^NSEI", period=period, interval="1d", auto_adjust=True, progress=False)["Close"].squeeze()
     close, open_, vol = pd.DataFrame(closes), pd.DataFrame(opens), pd.DataFrame(vols)
     for x in (close, open_, nifty, vol):
         x.index = pd.DatetimeIndex(x.index).tz_localize(None)
+    out = tidy(close, open_, nifty, vol, align)
+    return out if volume else out[:3]
+
+
+def tidy(close, open_, nifty, vol, align: bool):
+    """Choose which trading days to keep and line the tables up on them. No network, so it can be tested."""
+    close = close.sort_index()
     INFO.update(stocks_last=str(close.index[-1])[:10], nifty_last=str(nifty.index[-1])[:10], nifty_days={str(d)[:10] for d in nifty.index[-30:]},
                 last_rows={str(d)[:10]: int(n) for d, n in close.notna().sum(axis=1).iloc[-4:].items()})
     if align:                                              # backtest: only days the index also traded
         close = close[close.index.isin(nifty.index)]
     else:                                                  # live use: Yahoo can publish the index's bar hours after the stocks' bars,
         close = close[close.notna().sum(axis=1) >= 0.8 * close.shape[1]]   # so keep any day most stocks have a price for
-    out = (close, open_.reindex(close.index), nifty.reindex(close.index).ffill())
-    return out + (vol.reindex(close.index),) if volume else out
+    both = close.index.union(nifty.index)                  # carry the last index value forward onto days it has not reached
+    return close, open_.reindex(close.index), nifty.reindex(both).ffill().reindex(close.index), vol.reindex(close.index) if vol is not None else None
 
 
 # Broad sector groups, assigned by hand, for the sector-cap screen. A stock not listed here is its own group.

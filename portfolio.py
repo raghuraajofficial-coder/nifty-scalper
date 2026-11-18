@@ -113,13 +113,19 @@ def view(st: dict, d, close, last, mom, nifty) -> dict:
                 closed=st["closed"][-60:][::-1], history=st["history"][-750:])
 
 
-def main(source: str, replay: int):
-    close, open_, nifty = swing.load(source, "2y", align=False)
-    if swing.INFO:
-        print(f"data: stocks to {swing.INFO['stocks_last']}, Nifty to {swing.INFO['nifty_last']}, stocks priced on the last days {swing.INFO['last_rows']}")
+def forming(day: str, now) -> bool:
+    """True if this date's candle is still being built: it is today and the market has not been shut for a while."""
+    return day == now.strftime("%Y-%m-%d") and now.hour * 60 + now.minute < 15 * 60 + 45
+
+
+def main(source: str, replay: int, now=None, data=None) -> int:
+    """Returns 0 when the portfolio is as current as the price data allows, 2 when it is not."""
+    close, open_, nifty = data if data is not None else swing.load(source, "2y", align=False)
+    if swing.INFO and source != "demo":
+        print(f"data: stocks to {swing.INFO['stocks_last']}, Nifty to {swing.INFO['nifty_last']}, stocks priced on the last days {swing.INFO['last_rows']}, stocks missing the latest day: {swing.INFO.get('missing_first', 0)} at first, {swing.INFO.get('missing_after', 0)} after fetching again")
     close, open_, nifty = close.iloc[-400:], open_.iloc[-400:], nifty.iloc[-400:]
-    now = datetime.now(ns.IST)
-    if source != "demo" and str(close.index[-1])[:10] == now.strftime("%Y-%m-%d") and now.hour * 60 + now.minute < 15 * 60 + 45:
+    now = now or datetime.now(ns.IST)
+    if source != "demo" and len(close) and forming(str(close.index[-1])[:10], now):
         close, open_, nifty = close.iloc[:-1], open_.iloc[:-1], nifty.iloc[:-1]      # today's candle is still forming
     last, mom = close.ffill(), close.shift(CFG.skip) / close.shift(CFG.look) - 1
     st = json.loads(FILE.read_text())["state"] if FILE.exists() else new_state()
@@ -131,7 +137,7 @@ def main(source: str, replay: int):
     d = pd.Timestamp(st["last_day"])
     if d not in close.index:                               # the price source has not caught up to a day already processed
         print(f"prices end at {str(close.index[-1])[:10]}, before the last processed day {st['last_day']}; nothing to do")
-        return
+        return 2
     for h in st["history"][-10:]:                          # the index value may arrive after the day was first recorded
         if h["d"] in swing.INFO.get("nifty_days", ()) and pd.Timestamp(h["d"]) in nifty.index:
             h["n"] = round(float(nifty.at[pd.Timestamp(h["d"])]), 2)
@@ -139,8 +145,20 @@ def main(source: str, replay: int):
     FILE.write_text(json.dumps(dict(view=view(st, d, close, last, mom, nifty), state=st), indent=1))
     v = json.loads(FILE.read_text())["view"]
     print(f"{v['as_of']}  processed {len(todo)} day(s)  value Rs {v['equity']:,}  holdings {[h['sym'] for h in v['holdings']]}  queued buys {[b['sym'] for b in v['buys']]}")
+    if source == "demo":
+        return 0
+    # Self-check: say so loudly if the portfolio is behind, instead of reporting success after doing nothing.
+    seen = [day for day in swing.INFO.get("last_rows", {}) if not forming(day, now)]      # finished days the price source knows of
+    if seen and max(seen) > st["last_day"]:
+        print(f"BEHIND: the price source has {max(seen)} but too few stocks are priced for it yet "
+              f"({swing.INFO['last_rows'][max(seen)]} of {close.shape[1]}). The portfolio stays at {st['last_day']} until a later run.")
+        return 2
+    if (now.date() - d.date()).days > 5:
+        print(f"BEHIND: the portfolio was last updated for {st['last_day']}, more than five days ago, and the price source has nothing newer.")
+        return 2
+    return 0
 
 
 if __name__ == "__main__":
     a = sys.argv
-    main(a[a.index("--source") + 1] if "--source" in a else "yfinance", int(a[a.index("--replay") + 1]) if "--replay" in a else 0)
+    sys.exit(main(a[a.index("--source") + 1] if "--source" in a else "yfinance", int(a[a.index("--replay") + 1]) if "--replay" in a else 0))

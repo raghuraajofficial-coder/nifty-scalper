@@ -12,6 +12,8 @@ on:
   push:
     paths:
       - portfolio.py
+      - swing.py
+      - tests/**
       - .github/workflows/portfolio.yml
 permissions:
   contents: write
@@ -29,8 +31,12 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: pip install -r requirements.txt
-      - run: python portfolio.py
+      - name: Check the update logic against awkward situations
+        run: python tests/test_live.py
+      - name: Update the portfolio
+        run: python portfolio.py          # exits with an error if the portfolio ends up behind the price data
       - name: Save results
+        if: always()
         run: |
           git config user.name "scan-bot"
           git config user.email "scan-bot@users.noreply.github.com"
