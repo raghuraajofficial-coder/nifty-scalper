@@ -1,22 +1,22 @@
 {
  "view": {
-  "updated": "2026-11-19 14:22",
-  "as_of": "2026-11-18",
+  "updated": "2026-11-19 18:25",
+  "as_of": "2026-11-19",
   "started": "2026-11-13",
   "capital": 100000.0,
-  "equity": 95770,
+  "equity": 97803,
   "cash": 7099,
-  "pnl": -4230,
-  "pnl_pct": -4.23,
+  "pnl": -2197,
+  "pnl_pct": -2.2,
   "charges": 219,
   "tax_paid": 0,
   "tax_due": 0,
   "realised": 0,
-  "next_review": 17,
+  "next_review": 16,
   "trail_pct": 15.0,
   "market": {
-   "nifty": 25228,
-   "ma200": 23994,
+   "nifty": 25514,
+   "ma200": 23996,
    "above": true
   },
   "holdings": [
@@ -25,14 +25,14 @@
     "qty": 121,
     "entry": 164.16,
     "date": "2026-11-16",
-    "last": 157.24,
-    "peak": 164.39,
-    "stop": 139.73,
-    "value": 19026,
-    "pnl": -885,
-    "pnl_pct": -4.4,
-    "room_pct": 12.5,
-    "rank": 5,
+    "last": 165.44,
+    "peak": 165.44,
+    "stop": 140.62,
+    "value": 20018,
+    "pnl": 107,
+    "pnl_pct": 0.5,
+    "room_pct": 17.6,
+    "rank": 4,
     "selling": false
    },
    {
@@ -40,14 +40,14 @@
     "qty": 45,
     "entry": 437.44,
     "date": "2026-11-16",
-    "last": 421.7,
+    "last": 435.0,
     "peak": 437.44,
     "stop": 371.82,
-    "value": 18977,
-    "pnl": -755,
-    "pnl_pct": -3.8,
-    "room_pct": 13.4,
-    "rank": 4,
+    "value": 19575,
+    "pnl": -156,
+    "pnl_pct": -0.8,
+    "room_pct": 17.0,
+    "rank": 5,
     "selling": false
    },
    {
@@ -55,13 +55,13 @@
     "qty": 8,
     "entry": 2432.43,
     "date": "2026-11-16",
-    "last": 2322.5,
+    "last": 2306.0,
     "peak": 2432.43,
     "stop": 2067.57,
-    "value": 18580,
-    "pnl": -926,
-    "pnl_pct": -4.7,
-    "room_pct": 12.3,
+    "value": 18448,
+    "pnl": -1058,
+    "pnl_pct": -5.4,
+    "room_pct": 11.5,
     "rank": 1,
     "selling": false
    },
@@ -70,13 +70,13 @@
     "qty": 5,
     "entry": 3776.37,
     "date": "2026-11-16",
-    "last": 3619.0,
+    "last": 3645.0,
     "peak": 3776.37,
     "stop": 3209.92,
-    "value": 18095,
-    "pnl": -832,
-    "pnl_pct": -4.4,
-    "room_pct": 12.7,
+    "value": 18225,
+    "pnl": -702,
+    "pnl_pct": -3.7,
+    "room_pct": 13.6,
     "rank": 3,
     "selling": false
    },
@@ -85,13 +85,13 @@
     "qty": 1,
     "entry": 14791.78,
     "date": "2026-11-16",
-    "last": 13993.0,
+    "last": 14438.0,
     "peak": 14831.0,
     "stop": 12606.35,
-    "value": 13993,
-    "pnl": -834,
-    "pnl_pct": -5.6,
-    "room_pct": 11.0,
+    "value": 14438,
+    "pnl": -389,
+    "pnl_pct": -2.6,
+    "room_pct": 14.5,
     "rank": 2,
     "selling": false
    }
@@ -101,52 +101,52 @@
   "leaders": [
    {
     "sym": "LAURUSLABS",
-    "mom": 109.2,
+    "mom": 109.4,
     "held": true
    },
    {
     "sym": "APARINDS",
-    "mom": 88.6,
+    "mom": 75.9,
     "held": true
    },
    {
     "sym": "MCX",
-    "mom": 66.9,
-    "held": true
-   },
-   {
-    "sym": "BHEL",
-    "mom": 52.6,
+    "mom": 69.2,
     "held": true
    },
    {
     "sym": "MOTHERSON",
-    "mom": 52.5,
+    "mom": 50.0,
     "held": true
    },
    {
-    "sym": "SOLARINDS",
-    "mom": 45.2,
+    "sym": "BHEL",
+    "mom": 49.4,
+    "held": true
+   },
+   {
+    "sym": "FEDERALBNK",
+    "mom": 46.5,
     "held": false
    },
    {
     "sym": "MAHABANK",
-    "mom": 44.1,
+    "mom": 44.9,
     "held": false
    },
    {
-    "sym": "FEDERALBNK",
-    "mom": 43.8,
+    "sym": "ABB",
+    "mom": 43.9,
     "held": false
    },
    {
-    "sym": "AUROPHARMA",
-    "mom": 42.7,
+    "sym": "SOLARINDS",
+    "mom": 40.7,
     "held": false
    },
    {
     "sym": "DIVISLAB",
-    "mom": 40.4,
+    "mom": 39.9,
     "held": false
    }
   ],
@@ -171,12 +171,17 @@
     "d": "2026-11-18",
     "eq": 95769.54,
     "n": 25227.95
+   },
+   {
+    "d": "2026-11-19",
+    "eq": 97803.24,
+    "n": 25514.3
    }
   ]
  },
  "state": {
   "started": "2026-11-13",
-  "last_day": "2026-11-18",
+  "last_day": "2026-11-19",
   "cash": 7098.995560185227,
   "pos": {
    "APARINDS": {
@@ -212,12 +217,12 @@
     "cost": 19910.86978346866,
     "entry": 164.164,
     "date": "2026-11-16",
-    "peak": 164.38999938964844
+    "peak": 165.44000244140625
    }
   },
   "pending": null,
   "stops": [],
-  "since_review": 3,
+  "since_review": 4,
   "history": [
    {
     "d": "2026-11-13",
@@ -238,6 +243,11 @@
     "d": "2026-11-18",
     "eq": 95769.54,
     "n": 25227.95
+   },
+   {
+    "d": "2026-11-19",
+    "eq": 97803.24,
+    "n": 25514.3
    }
   ],
   "closed": [],
