@@ -135,9 +135,9 @@ def main(source: str, replay: int, now=None, data=None) -> int:
     if st["last_day"] is None:
         sys.exit("No price data to process.")
     d = pd.Timestamp(st["last_day"])
-    if d not in close.index:                               # the price source has not caught up to a day already processed
-        print(f"prices end at {str(close.index[-1])[:10]}, before the last processed day {st['last_day']}; nothing to do")
-        return 2
+    if d not in close.index:                               # overnight the price source can briefly lose its latest day
+        print(f"prices end at {str(close.index[-1])[:10]}, before the last processed day {st['last_day']}; the portfolio is already ahead, nothing to do")
+        return 2 if (now.date() - d.date()).days > 5 else 0   # not a failure: there is nothing newer to process
     for h in st["history"][-10:]:                          # the index value may arrive after the day was first recorded
         if h["d"] in swing.INFO.get("nifty_days", ()) and pd.Timestamp(h["d"]) in nifty.index:
             h["n"] = round(float(nifty.at[pd.Timestamp(h["d"])]), 2)

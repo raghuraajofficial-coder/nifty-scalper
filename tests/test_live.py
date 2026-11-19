@@ -129,6 +129,8 @@ def test_price_source_behind_the_portfolio_leaves_it_untouched():
     _, a = run("2026-11-17", "2026-11-17 18:30")
     before = portfolio.FILE.read_text()
     code, _ = run("2026-11-13", "2026-11-18 03:00")                                # the source has lost the last two days
+    assert code == 0 and portfolio.FILE.read_text() == before, "already ahead of the source: leave the file alone and do not report a failure"
+    code, _ = run("2026-11-13", "2026-11-27 03:00")                                # ...but still behind a week later is worth reporting
     assert code == 2 and portfolio.FILE.read_text() == before
 
 
