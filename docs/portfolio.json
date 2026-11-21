@@ -1,6 +1,6 @@
 {
  "view": {
-  "updated": "2026-11-20 18:26",
+  "updated": "2026-11-21 13:51",
   "as_of": "2026-11-20",
   "started": "2026-11-13",
   "capital": 100000.0,
@@ -32,7 +32,7 @@
     "pnl": 239,
     "pnl_pct": 1.2,
     "room_pct": 17.6,
-    "rank": 6,
+    "rank": 5,
     "selling": false
    },
    {
@@ -47,7 +47,7 @@
     "pnl": -217,
     "pnl_pct": -1.1,
     "room_pct": 16.6,
-    "rank": 5,
+    "rank": 4,
     "selling": false
    },
    {
@@ -77,7 +77,7 @@
     "pnl": -1252,
     "pnl_pct": -6.6,
     "room_pct": 10.1,
-    "rank": 3,
+    "rank": 2,
     "selling": false
    },
    {
@@ -85,14 +85,14 @@
     "qty": 1,
     "entry": 14791.78,
     "date": "2026-11-16",
-    "last": 14339.0,
+    "last": 14438.0,
     "peak": 14831.0,
     "stop": 12606.35,
-    "value": 14339,
-    "pnl": -488,
-    "pnl_pct": -3.3,
-    "room_pct": 13.7,
-    "rank": 2,
+    "value": 14438,
+    "pnl": -389,
+    "pnl_pct": -2.6,
+    "room_pct": 14.5,
+    "rank": null,
     "selling": false
    }
   ],
@@ -102,11 +102,6 @@
    {
     "sym": "LAURUSLABS",
     "mom": 102.0,
-    "held": true
-   },
-   {
-    "sym": "APARINDS",
-    "mom": 71.0,
     "held": true
    },
    {
@@ -140,13 +135,18 @@
     "held": false
    },
    {
-    "sym": "DIVISLAB",
-    "mom": 40.0,
+    "sym": "RADICO",
+    "mom": 37.0,
     "held": false
    },
    {
-    "sym": "RADICO",
-    "mom": 37.0,
+    "sym": "ABB",
+    "mom": 35.6,
+    "held": false
+   },
+   {
+    "sym": "POWERINDIA",
+    "mom": 31.0,
     "held": false
    }
   ],
