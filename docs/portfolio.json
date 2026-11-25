@@ -1,22 +1,22 @@
 {
  "view": {
-  "updated": "2026-11-25 15:25",
-  "as_of": "2026-11-23",
+  "updated": "2026-11-25 18:25",
+  "as_of": "2026-11-25",
   "started": "2026-11-13",
   "capital": 100000.0,
-  "equity": 96920,
+  "equity": 97579,
   "cash": 7099,
-  "pnl": -3080,
-  "pnl_pct": -3.08,
+  "pnl": -2421,
+  "pnl_pct": -2.42,
   "charges": 219,
   "tax_paid": 0,
   "tax_due": 0,
   "realised": 0,
-  "next_review": 14,
+  "next_review": 13,
   "trail_pct": 15.0,
   "market": {
-   "nifty": 25350,
-   "ma200": 23997,
+   "nifty": 25819,
+   "ma200": 24000,
    "above": true
   },
   "holdings": [
@@ -25,14 +25,14 @@
     "qty": 121,
     "entry": 164.16,
     "date": "2026-11-16",
-    "last": 165.76,
+    "last": 166.26,
     "peak": 166.53,
     "stop": 141.55,
-    "value": 20057,
-    "pnl": 146,
-    "pnl_pct": 0.7,
-    "room_pct": 17.1,
-    "rank": 6,
+    "value": 20117,
+    "pnl": 207,
+    "pnl_pct": 1.0,
+    "room_pct": 17.5,
+    "rank": 5,
     "selling": false
    },
    {
@@ -40,13 +40,13 @@
     "qty": 8,
     "entry": 2432.43,
     "date": "2026-11-16",
-    "last": 2370.7,
-    "peak": 2432.43,
-    "stop": 2067.57,
-    "value": 18966,
-    "pnl": -540,
-    "pnl_pct": -2.8,
-    "room_pct": 14.7,
+    "last": 2460.0,
+    "peak": 2460.0,
+    "stop": 2091.0,
+    "value": 19680,
+    "pnl": 174,
+    "pnl_pct": 0.9,
+    "room_pct": 17.6,
     "rank": 1,
     "selling": false
    },
@@ -55,14 +55,14 @@
     "qty": 45,
     "entry": 437.44,
     "date": "2026-11-16",
-    "last": 415.7,
+    "last": 413.5,
     "peak": 437.44,
     "stop": 371.82,
-    "value": 18707,
-    "pnl": -1025,
-    "pnl_pct": -5.2,
-    "room_pct": 11.8,
-    "rank": 5,
+    "value": 18608,
+    "pnl": -1124,
+    "pnl_pct": -5.7,
+    "room_pct": 11.2,
+    "rank": 7,
     "selling": false
    },
    {
@@ -70,13 +70,13 @@
     "qty": 5,
     "entry": 3776.37,
     "date": "2026-11-16",
-    "last": 3581.6,
+    "last": 3565.0,
     "peak": 3776.37,
     "stop": 3209.92,
-    "value": 17908,
-    "pnl": -1019,
-    "pnl_pct": -5.4,
-    "room_pct": 11.6,
+    "value": 17825,
+    "pnl": -1102,
+    "pnl_pct": -5.8,
+    "room_pct": 11.1,
     "rank": 3,
     "selling": false
    },
@@ -85,13 +85,13 @@
     "qty": 1,
     "entry": 14791.78,
     "date": "2026-11-16",
-    "last": 14184.0,
+    "last": 14250.0,
     "peak": 14831.0,
     "stop": 12606.35,
-    "value": 14184,
-    "pnl": -643,
-    "pnl_pct": -4.3,
-    "room_pct": 12.5,
+    "value": 14250,
+    "pnl": -577,
+    "pnl_pct": -3.9,
+    "room_pct": 13.0,
     "rank": 2,
     "selling": false
    }
@@ -101,52 +101,52 @@
   "leaders": [
    {
     "sym": "LAURUSLABS",
-    "mom": 100.7,
+    "mom": 93.0,
     "held": true
    },
    {
     "sym": "APARINDS",
-    "mom": 62.8,
+    "mom": 56.3,
     "held": true
    },
    {
     "sym": "MCX",
-    "mom": 61.5,
+    "mom": 56.1,
     "held": true
    },
    {
     "sym": "FEDERALBNK",
-    "mom": 47.7,
+    "mom": 43.1,
     "held": false
    },
    {
-    "sym": "BHEL",
-    "mom": 42.1,
-    "held": true
-   },
-   {
     "sym": "MOTHERSON",
-    "mom": 41.5,
+    "mom": 38.5,
     "held": true
    },
    {
     "sym": "DIVISLAB",
-    "mom": 41.3,
+    "mom": 37.9,
+    "held": false
+   },
+   {
+    "sym": "BHEL",
+    "mom": 36.2,
+    "held": true
+   },
+   {
+    "sym": "SOLARINDS",
+    "mom": 32.1,
     "held": false
    },
    {
     "sym": "MAHABANK",
-    "mom": 39.4,
+    "mom": 29.6,
     "held": false
    },
    {
-    "sym": "SOLARINDS",
-    "mom": 37.0,
-    "held": false
-   },
-   {
-    "sym": "ABB",
-    "mom": 32.6,
+    "sym": "TECHM",
+    "mom": 27.5,
     "held": false
    }
   ],
@@ -186,12 +186,17 @@
     "d": "2026-11-23",
     "eq": 96920.06,
     "n": 25349.65
+   },
+   {
+    "d": "2026-11-25",
+    "eq": 97578.95,
+    "n": 25819.25
    }
   ]
  },
  "state": {
   "started": "2026-11-13",
-  "last_day": "2026-11-23",
+  "last_day": "2026-11-25",
   "cash": 7098.995560185227,
   "pos": {
    "APARINDS": {
@@ -206,7 +211,7 @@
     "cost": 19505.50839501264,
     "entry": 2432.43,
     "date": "2026-11-16",
-    "peak": 2432.43
+    "peak": 2460.0
    },
    "MCX": {
     "qty": 5,
@@ -232,7 +237,7 @@
   },
   "pending": null,
   "stops": [],
-  "since_review": 6,
+  "since_review": 7,
   "history": [
    {
     "d": "2026-11-13",
@@ -268,6 +273,11 @@
     "d": "2026-11-23",
     "eq": 96920.06,
     "n": 25349.65
+   },
+   {
+    "d": "2026-11-25",
+    "eq": 97578.95,
+    "n": 25819.25
    }
   ],
   "closed": [],
